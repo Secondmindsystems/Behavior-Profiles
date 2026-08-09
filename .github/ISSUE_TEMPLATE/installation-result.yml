@@ -1,0 +1,48 @@
+name: Installation result
+description: Report PASS, FAIL, or CONFUSED after running a declared profile fixture.
+title: "[installation result] "
+labels:
+  - evidence-return
+body:
+  - type: dropdown
+    id: classification
+    attributes:
+      label: Classification
+      options:
+        - PASS
+        - FAIL
+        - CONFUSED
+    validations:
+      required: true
+  - type: input
+    id: agent
+    attributes:
+      label: Agent, model, and version
+      description: Include only identifiers you can verify.
+    validations:
+      required: true
+  - type: input
+    id: profile
+    attributes:
+      label: Profile commit or SHA-256
+    validations:
+      required: true
+  - type: input
+    id: fixture
+    attributes:
+      label: Fixture ID
+    validations:
+      required: true
+  - type: textarea
+    id: observed
+    attributes:
+      label: Observed conduct
+      description: Do not include secrets, private data, or hidden chain-of-thought.
+    validations:
+      required: true
+  - type: textarea
+    id: basis
+    attributes:
+      label: Decision basis and limitations
+    validations:
+      required: true

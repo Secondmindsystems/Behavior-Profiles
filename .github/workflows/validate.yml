@@ -1,0 +1,35 @@
+name: Validate Behavior Profiles package
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify package structure
+        run: python -B tools/verify_profile_package.py --mode package
+      - name: Verify release evidence
+        run: python -B tools/verify_profile_package.py --mode release
+      - name: Run tests
+        run: python -B -m unittest discover -s tests -p "test_*.py"
+      - name: Run harness tests
+        run: python -B -m unittest discover -s harness/tests -p "test_*.py"
+      - name: Verify frozen publication identities
+        run: python -B tools/check_scope_control_publication_state.py --source-file scope-control/BEHAVIOR_PROFILE_SCOPE_CONTROL.md
+      - name: Verify paired control discrimination
+        run: >-
+          python -B harness/harness.py run-controls
+          --suite harness/profiles/scope-control/suite.json
+          --observations harness/profiles/scope-control/controls.json
+          --profile scope-control/BEHAVIOR_PROFILE_SCOPE_CONTROL.md

@@ -1,0 +1,21 @@
+{
+  "record_type": "agent_observation_or_synthetic_harness_control_run",
+  "suite_id": "REQUIRED",
+  "generated_at_utc": "REQUIRED_ISO_8601",
+  "decision": "PASS_OR_FAIL_OR_CONFUSED",
+  "errors": [],
+  "structural_profile_check": {
+    "decision": "PASS_OR_FAIL",
+    "profile_identity": {
+      "source": "git_or_filesystem",
+      "ref": "REQUIRED_FOR_GIT",
+      "path": "REQUIRED"
+    },
+    "profile_sha256": "REQUIRED",
+    "assertion_count": 19
+  },
+  "results": [],
+  "discrimination": {},
+  "claim_ceiling": "REQUIRED",
+  "proof_boundary": "REQUIRED"
+}

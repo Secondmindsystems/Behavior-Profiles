@@ -1,0 +1,17 @@
+{
+  "session_id": "internal-dogfood-002-session-1",
+  "thread_id": "019fcab4-7c96-7950-961c-25277fda605a",
+  "timestamp_utc": "2026-08-04T02:59:41Z",
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 2827,
+      "sha256": "8ebe592498af4fd5d5a4517cd68e02b03400c68ed1040cc21fcb1e161192cf1e"
+    },
+    {
+      "path": "docs/example.md",
+      "bytes": 26,
+      "sha256": "edbc7dfff29c6c5a611d8413a0a550e6d1236b354aa2ba4713e1170ee6c89063"
+    }
+  ]
+}

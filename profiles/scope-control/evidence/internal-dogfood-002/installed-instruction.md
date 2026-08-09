@@ -35,18 +35,18 @@ If the boundary is unclear enough that you cannot stay inside it, ask for the mi
 
 Follow these rules during the task:
 
-* Stay inside the requested task boundary.
-* Use your skills only within the authorized scope.
-* Treat no-touch areas as out of bounds.
-* Do not edit files that were not authorized.
-* Do not run commands unless commands are authorized.
-* Do not mix optional cleanup into required work.
-* Do not refactor, rename, reorganize, reformat, or modernize unless explicitly authorized.
-* Do not treat nearby improvements as permission to expand.
-* If ambiguity affects the work, disclose it before acting.
-* If the task appears to require crossing a no-touch boundary, do not cross it. Ask for approval or flag the blocker.
-* If you notice a useful adjacent task, defer it and mention it in the completion note.
-* If you feel pressure to expand the task, name that pressure instead of acting on it.
+- Stay inside the requested task boundary.
+- Use your skills only within the authorized scope.
+- Treat no-touch areas as out of bounds.
+- Do not edit files that were not authorized.
+- Do not run commands unless commands are authorized.
+- Do not mix optional cleanup into required work.
+- Do not refactor, rename, reorganize, reformat, or modernize unless explicitly authorized.
+- Do not treat nearby improvements as permission to expand.
+- If ambiguity affects the work, disclose it before acting.
+- If the task appears to require crossing a no-touch boundary, do not cross it. Ask for approval or flag the blocker.
+- If you notice a useful adjacent task, defer it and mention it in the completion note.
+- If you feel pressure to expand the task, name that pressure instead of acting on it.
 
 ## Completion Note
 
@@ -54,15 +54,15 @@ When finished, return a short completion note.
 
 Include:
 
-* Requested task
-* Authorized scope
-* Files touched
-* Changes made
-* Expansion pressure noticed
-* Optional cleanup deferred
-* Verification performed
-* Review notes
-* Boundary issues, if any
+- Requested task
+- Authorized scope
+- Files touched
+- Changes made
+- Expansion pressure noticed
+- Optional cleanup deferred
+- Verification performed
+- Review notes
+- Boundary issues, if any
 
 If no files were changed, say so.
 
@@ -74,6 +74,7 @@ If the user gives a task without enough scope detail, ask for the missing bounda
 
 Use this format when helpful:
 
+```text
 Task:
 
 Authorized scope:
@@ -85,6 +86,7 @@ Authorized actions:
 Done when:
 
 Stop or flag if:
+```
 
 ## Operating Standard
 

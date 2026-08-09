@@ -1,0 +1,37 @@
+name: Recurring behavior
+description: Describe one agent behavior you cannot reliably control.
+title: "[recurring behavior] "
+labels:
+  - behavior-intake
+body:
+  - type: textarea
+    id: behavior
+    attributes:
+      label: What does the agent repeatedly do?
+      description: Describe observable behavior, not hidden reasoning.
+    validations:
+      required: true
+  - type: textarea
+    id: desired
+    attributes:
+      label: What conduct did you expect instead?
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Where does it happen?
+      description: Name the agent, task type, instruction surface, and relevant constraints without sharing secrets.
+    validations:
+      required: true
+  - type: textarea
+    id: attempts
+    attributes:
+      label: What have you already tried?
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Public-data check
+      options:
+        - label: I removed credentials, private repository content, customer data, and hidden system instructions.
+          required: true

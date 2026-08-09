@@ -1,0 +1,69 @@
+{
+  "run_id": "internal-dogfood-002",
+  "subject_agent": "REQUIRED",
+  "model_identifier": "REQUIRED",
+  "host_identifier": "REQUIRED",
+  "operating_system": "REQUIRED",
+  "timestamp_utc": "REQUIRED_ISO_8601",
+  "prior_context_state": "three_fresh_sessions",
+  "dogfood_manifest_reference": "profiles/scope-control/DOGFOOD_MANIFEST.json",
+  "profile": {
+    "profile_id": "behavior-profile-scope-control",
+    "version": "0.1",
+    "path": "profiles/scope-control/BEHAVIOR_PROFILE.md",
+    "sha256": "8ebe592498af4fd5d5a4517cd68e02b03400c68ed1040cc21fcb1e161192cf1e"
+  },
+  "adapter": {
+    "adapter_id": "agents-md",
+    "version": "0.1",
+    "path": "adapters/agents-md/README.md",
+    "sha256": "e1069479909d7b99308befff8c4b552a61b07d43f6804297fd4928ce7e5e1f8d",
+    "installed_instruction_reference": "profiles/scope-control/evidence/internal-dogfood-002/installed-instruction.md",
+    "installed_instruction_sha256": "REQUIRED"
+  },
+  "observation_harness": {
+    "harness_id": "REQUIRED",
+    "version": "REQUIRED"
+  },
+  "evaluator": {
+    "evaluator_id": "REQUIRED",
+    "independent_from_subject": true
+  },
+  "sessions": [
+    {
+      "session_id": "internal-dogfood-002-session-1",
+      "prior_context_state": "fresh_no_prior_fixture_or_second_mind_context",
+      "fixture_id": "scope-control-authorized-execution-v0-1",
+      "fixture_sha256": "1ce38608b0e186771ffcad14964aab008cc243bb5c52edfa57c08e964311d9c1",
+      "prompt_sha256": "8ef53b6717eef62e49d8958a54c901b588245f4800939a017224ad92bafe0567",
+      "disposition": "PASS_OR_FAIL_OR_CONFUSED",
+      "transcript_reference": "profiles/scope-control/evidence/internal-dogfood-002/session-1-transcript.md",
+      "pre_run_manifest_reference": "profiles/scope-control/evidence/internal-dogfood-002/session-1-pre.json",
+      "post_run_manifest_reference": "profiles/scope-control/evidence/internal-dogfood-002/session-1-post.json"
+    },
+    {
+      "session_id": "internal-dogfood-002-session-2",
+      "prior_context_state": "fresh_no_prior_fixture_or_second_mind_context",
+      "fixture_id": "scope-control-expansion-pressure-v0-2",
+      "fixture_sha256": "7a3a82cf038de9102bc09f9daf3315afbb63d32ab756d93c8ccabd4a814628e8",
+      "prompt_sha256": "a5fafcb5fb1b2c39246e4fc9d1714d5c11f3fb87fa0ea1d659ff2e6e334f8762",
+      "disposition": "PASS_OR_FAIL_OR_CONFUSED",
+      "transcript_reference": "profiles/scope-control/evidence/internal-dogfood-002/session-2-transcript.md",
+      "pre_run_manifest_reference": "profiles/scope-control/evidence/internal-dogfood-002/session-2-pre.json",
+      "post_run_manifest_reference": "profiles/scope-control/evidence/internal-dogfood-002/session-2-post.json"
+    },
+    {
+      "session_id": "internal-dogfood-002-session-3",
+      "prior_context_state": "fresh_no_prior_fixture_or_second_mind_context",
+      "fixture_id": "scope-control-ambiguous-authority-v0-1",
+      "fixture_sha256": "c56d963275e06af3607ade00456a01f652d28b0d192612d94f346eeca2b92681",
+      "prompt_sha256": "d2884d13a7e32b08f7cb7df0618ee6d1734be1237f3784825760a32a026ea21a",
+      "disposition": "PASS_OR_FAIL_OR_CONFUSED",
+      "transcript_reference": "profiles/scope-control/evidence/internal-dogfood-002/session-3-transcript.md",
+      "pre_run_manifest_reference": "profiles/scope-control/evidence/internal-dogfood-002/session-3-pre.json",
+      "post_run_manifest_reference": "profiles/scope-control/evidence/internal-dogfood-002/session-3-post.json"
+    }
+  ],
+  "aggregate_disposition": "PASS_INTERNAL_DOGFOOD_OR_FAIL_INTERNAL_DOGFOOD_OR_CONFUSED_INTERNAL_DOGFOOD",
+  "limitations_statement": "This run records one agent's observable behavior under three frozen fixtures, one profile version, one adapter, one environment, and one observation method. It does not establish universal obedience, safety, enforcement, cross-model consistency, production reliability, or general effectiveness."
+}
