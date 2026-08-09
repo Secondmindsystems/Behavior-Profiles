@@ -1,8 +1,11 @@
 from __future__ import annotations
 
 import copy
+import hashlib
 import importlib.util
+import inspect
 import json
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -10,9 +13,42 @@ import unittest
 from pathlib import Path
 
 
-HARNESS_ROOT = Path(__file__).resolve().parents[1]
-PRODUCT_ROOT = HARNESS_ROOT.parent
-REPO_ROOT = HARNESS_ROOT.parents[2]
+CANONICAL_SHA256 = "769385360202ad58557d52ab1d3b9e1d3419a056b50f513af66d3604dab0e1d6"
+CANONICAL_RELATIVE_PATH = Path("scope-control/BEHAVIOR_PROFILE_SCOPE_CONTROL.md")
+PACKAGE_SENTINELS = (
+    Path("README.md"),
+    Path("harness/harness.py"),
+    Path("harness/profiles/scope-control/suite.json"),
+    CANONICAL_RELATIVE_PATH,
+)
+
+
+def is_behavior_profiles_root(candidate: Path) -> bool:
+    if not all((candidate / relative_path).is_file() for relative_path in PACKAGE_SENTINELS):
+        return False
+    try:
+        canonical_hash = hashlib.sha256(
+            (candidate / CANONICAL_RELATIVE_PATH).read_bytes()
+        ).hexdigest()
+    except OSError:
+        return False
+    return canonical_hash == CANONICAL_SHA256
+
+
+def find_package_root(start: Path) -> Path:
+    resolved = start.resolve()
+    cursor = resolved if resolved.is_dir() else resolved.parent
+    for candidate in (cursor, *cursor.parents):
+        if is_behavior_profiles_root(candidate):
+            return candidate
+    raise FileNotFoundError(
+        f"Behavior Profiles package root not found from {resolved}; "
+        "required package sentinels or frozen canonical identity are missing"
+    )
+
+
+PRODUCT_ROOT = find_package_root(Path(__file__))
+HARNESS_ROOT = PRODUCT_ROOT / "harness"
 MODULE_PATH = HARNESS_ROOT / "harness.py"
 SPEC = importlib.util.spec_from_file_location("behavior_profile_harness", MODULE_PATH)
 assert SPEC and SPEC.loader
@@ -22,15 +58,28 @@ SPEC.loader.exec_module(MODULE)
 SUITE_PATH = HARNESS_ROOT / "profiles/scope-control/suite.json"
 CONTROLS_PATH = HARNESS_ROOT / "profiles/scope-control/controls.json"
 WORKTREE_PROFILE_PATH = PRODUCT_ROOT / "profiles/scope-control/BEHAVIOR_PROFILE.md"
-CANONICAL_REF = "main"
-CANONICAL_PATH = "products/behavior-profiles/scope-control/BEHAVIOR_PROFILE_SCOPE_CONTROL.md"
-CANONICAL_SHA256 = "769385360202ad58557d52ab1d3b9e1d3419a056b50f513af66d3604dab0e1d6"
+CANONICAL_PROFILE_PATH = PRODUCT_ROOT / CANONICAL_RELATIVE_PATH
 
 
-def canonical_main_bytes() -> bytes:
-    return subprocess.check_output(
-        ["git", "show", f"{CANONICAL_REF}:{CANONICAL_PATH}"], cwd=REPO_ROOT
-    )
+def read_canonical_profile(package_root: Path = PRODUCT_ROOT) -> bytes:
+    canonical_path = package_root / CANONICAL_RELATIVE_PATH
+    try:
+        raw = canonical_path.read_bytes()
+    except OSError as error:
+        raise FileNotFoundError(
+            f"packaged canonical Scope Control artifact unavailable: {canonical_path}"
+        ) from error
+    observed_hash = hashlib.sha256(raw).hexdigest()
+    if observed_hash != CANONICAL_SHA256:
+        raise ValueError(
+            "packaged canonical Scope Control identity mismatch: "
+            f"expected {CANONICAL_SHA256}, observed {observed_hash}"
+        )
+    return raw
+
+
+def canonical_cli_arguments() -> tuple[str, str]:
+    return "--profile", str(CANONICAL_PROFILE_PATH)
 
 
 def replace_unordered_marker(text: str, marker: str) -> str:
@@ -45,14 +94,14 @@ class HarnessTests(unittest.TestCase):
     def setUpClass(cls) -> None:
         cls.suite = MODULE.load_json(SUITE_PATH)
         cls.controls = MODULE.load_json(CONTROLS_PATH)
-        cls.canonical_text = canonical_main_bytes().decode("utf-8")
+        cls.canonical_text = read_canonical_profile().decode("utf-8")
 
     def test_suite_is_valid_and_maps_all_requirements(self) -> None:
         self.assertEqual([], MODULE.validate_suite(self.suite))
         self.assertEqual(19, len(self.suite["profile_contract"]["assertions"]))
         self.assertEqual(8, len(self.suite["fixtures"]))
 
-    def test_canonical_main_profile_passes_all_structural_assertions(self) -> None:
+    def test_packaged_canonical_profile_passes_all_structural_assertions(self) -> None:
         result = MODULE.check_profile(self.suite, self.canonical_text)
         self.assertEqual("PASS", result["decision"], result["errors"])
         self.assertEqual(19, len(result["criteria"]))
@@ -141,7 +190,10 @@ class HarnessTests(unittest.TestCase):
             self.suite,
             self.controls,
             profile_text=self.canonical_text,
-            profile_identity={"source": "git", "ref": CANONICAL_REF, "path": CANONICAL_PATH},
+            profile_identity={
+                "source": "filesystem",
+                "path": CANONICAL_RELATIVE_PATH.as_posix(),
+            },
             profile_sha256=CANONICAL_SHA256,
         )
         self.assertEqual("PASS", result["decision"], result["errors"])
@@ -152,10 +204,12 @@ class HarnessTests(unittest.TestCase):
         self.assertEqual(19, result["structural_profile_check"]["assertion_count"])
         self.assertIn("Synthetic controls are not agent evidence", result["proof_boundary"])
 
-    def _run_cli(self, *arguments: str) -> subprocess.CompletedProcess[str]:
+    def _run_cli(
+        self, *arguments: str, cwd: Path = PRODUCT_ROOT
+    ) -> subprocess.CompletedProcess[str]:
         return subprocess.run(
             [sys.executable, str(MODULE_PATH), *arguments],
-            cwd=PRODUCT_ROOT,
+            cwd=cwd,
             capture_output=True,
             text=True,
             check=False,
@@ -166,12 +220,7 @@ class HarnessTests(unittest.TestCase):
             "check-profile",
             "--suite",
             str(SUITE_PATH),
-            "--git-ref",
-            CANONICAL_REF,
-            "--git-path",
-            CANONICAL_PATH,
-            "--repo-root",
-            str(REPO_ROOT),
+            *canonical_cli_arguments(),
         )
         self.assertEqual(0, passed.returncode, passed.stdout + passed.stderr)
 
@@ -194,12 +243,7 @@ class HarnessTests(unittest.TestCase):
             "run-controls",
             "--suite",
             str(SUITE_PATH),
-            "--git-ref",
-            CANONICAL_REF,
-            "--git-path",
-            CANONICAL_PATH,
-            "--repo-root",
-            str(REPO_ROOT),
+            *canonical_cli_arguments(),
         )
         passed = self._run_cli(*common, "--observations", str(CONTROLS_PATH))
         self.assertEqual(0, passed.returncode, passed.stdout + passed.stderr)
@@ -228,6 +272,92 @@ class HarnessTests(unittest.TestCase):
             )
         self.assertEqual(1, result.returncode, result.stdout + result.stderr)
         self.assertEqual("CONFUSED", json.loads(result.stdout)["decision"])
+
+    def _copy_package_sentinels(self, destination: Path) -> None:
+        for relative_path in PACKAGE_SENTINELS:
+            target = destination / relative_path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(PRODUCT_ROOT / relative_path, target)
+
+    def test_root_resolution_has_no_fixed_parent_depth(self) -> None:
+        source = inspect.getsource(find_package_root)
+        self.assertNotIn(".parents[", source)
+        with tempfile.TemporaryDirectory() as directory:
+            package_root = Path(directory) / "one" / "two" / "behavior-profiles"
+            self._copy_package_sentinels(package_root)
+            nested = package_root / "harness" / "tests" / "nested"
+            nested.mkdir(parents=True)
+            self.assertEqual(package_root.resolve(), find_package_root(nested))
+
+    def test_standalone_root_resolution_uses_package_sentinels(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            package_root = Path(directory) / "behavior-profiles"
+            self._copy_package_sentinels(package_root)
+            nested = package_root / "profiles" / "scope-control"
+            self.assertEqual(package_root.resolve(), find_package_root(nested))
+            self.assertEqual(CANONICAL_SHA256, hashlib.sha256(read_canonical_profile(package_root)).hexdigest())
+
+    def test_canonical_artifact_is_sha_bound(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            package_root = Path(directory) / "behavior-profiles"
+            self._copy_package_sentinels(package_root)
+            canonical_path = package_root / CANONICAL_RELATIVE_PATH
+            canonical_path.write_bytes(canonical_path.read_bytes() + b"\ncorrupt\n")
+            with self.assertRaisesRegex(ValueError, "identity mismatch"):
+                read_canonical_profile(package_root)
+
+    def test_public_proof_path_has_no_sovereign_history_lookup(self) -> None:
+        portable_source = "\n".join(
+            (
+                inspect.getsource(find_package_root),
+                inspect.getsource(read_canonical_profile),
+                inspect.getsource(canonical_cli_arguments),
+            )
+        )
+        self.assertNotIn("git show", portable_source)
+        self.assertNotIn("products/behavior-profiles", portable_source)
+        self.assertNotIn("--git-ref", canonical_cli_arguments())
+
+    def test_cli_passes_from_nested_working_directory(self) -> None:
+        nested_cwd = PRODUCT_ROOT / "profiles" / "scope-control"
+        result = self._run_cli(
+            "check-profile",
+            "--suite",
+            str(SUITE_PATH),
+            *canonical_cli_arguments(),
+            cwd=nested_cwd,
+        )
+        self.assertEqual(0, result.returncode, result.stdout + result.stderr)
+
+    def test_wrong_git_ancestor_does_not_supply_package_identity(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            unrelated_root = Path(directory) / "unrelated"
+            unrelated_root.mkdir()
+            initialized = subprocess.run(
+                ["git", "init", "--quiet", str(unrelated_root)],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(0, initialized.returncode, initialized.stdout + initialized.stderr)
+            package_root = unrelated_root / "vendor" / "behavior-profiles"
+            self._copy_package_sentinels(package_root)
+            nested = package_root / "harness" / "tests"
+            nested.mkdir(parents=True, exist_ok=True)
+            discovered_git_root = subprocess.check_output(
+                ["git", "-C", str(nested), "rev-parse", "--show-toplevel"],
+                text=True,
+            ).strip()
+            self.assertEqual(unrelated_root.resolve(), Path(discovered_git_root).resolve())
+            self.assertEqual(package_root.resolve(), find_package_root(nested))
+
+    def test_malformed_package_root_fails_closed(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            malformed_root = Path(directory) / "behavior-profiles"
+            malformed_root.mkdir()
+            (malformed_root / "README.md").write_text("not the package", encoding="utf-8")
+            with self.assertRaisesRegex(FileNotFoundError, "package root not found"):
+                find_package_root(malformed_root)
 
 
 if __name__ == "__main__":
