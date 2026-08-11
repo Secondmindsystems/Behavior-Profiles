@@ -33,122 +33,55 @@ jobs:
           --suite harness/profiles/scope-control/suite.json
           --observations harness/profiles/scope-control/controls.json
           --profile scope-control/BEHAVIOR_PROFILE_SCOPE_CONTROL.md
-      - name: Run runtime tests
-        run: python -B -m unittest discover -s products/behavior-profiles/runtime/tests -p "test_*.py"
-      - name: Verify runtime engine matrix
-        run: python -B products/behavior-profiles/runtime/tools/run_engine_matrix.py
-      - name: Verify public Runtime projection integrity
+      - name: Verify Runtime proof-only boundary
         run: |
           python - <<'PY'
           import hashlib
           import json
-          import re
           import subprocess
-          from pathlib import Path, PurePosixPath
+          from pathlib import Path
 
-          manifest_path = Path("products/behavior-profiles/PUBLIC_RUNTIME_PROJECTION_MANIFEST_v0_1.json")
-          runtime_root = "products/behavior-profiles/runtime/"
+          manifest_path = Path("products/behavior-profiles/PUBLIC_RUNTIME_QUALIFICATION_MANIFEST_v0_1.json")
+          old_manifest = Path("products/behavior-profiles/PUBLIC_RUNTIME_PROJECTION_MANIFEST_v0_1.json")
+          runtime_readme = "products/behavior-profiles/runtime/README.md"
           canonical_sha = "769385360202ad58557d52ab1d3b9e1d3419a056b50f513af66d3604dab0e1d6"
-          expected_metadata = {
-              "schema_version": "1.0",
-              "campaign_id": "BP-SCOPE-CONTROL-RUNTIME-001",
-              "projection_id": "SCOPE_CONTROL_RUNTIME_PUBLIC_PROJECTION_v0_1",
-              "projection_class": "PUBLIC_DISTRIBUTION_PROJECTION",
-              "qualified_runtime_commit": "fcfc2ddfc3b12f1cb755dcc8b8b5fac1608e24c8",
-              "qualification_commit": "85ab8ab006413c0995044c92d993535805111ce2",
-              "public_projection_basis": "7ee5ed589ef007747ff03cd93dcf3ddd33677052",
-              "canonical_constitution_sha256": canonical_sha,
-              "qualified_source_file_count": 20,
-              "distributed_runtime_file_count": 18,
-              "internal_qualification_test_count": 25,
-              "public_projection_test_count": 21,
-              "engine_matrix_case_count": 16,
-          }
-          expected_exclusions = {
-              "products/behavior-profiles/runtime/tests/test_qualification_verifier.py":
-                  "52340b1787b9a3e7f31068ce628c229a6e33b9a75c47ef08d0bb0a5cba6bcabf",
-              "products/behavior-profiles/runtime/tools/verify_runtime_qualification.py":
-                  "57d5543e43ecfbeb320b29e663ae82b5b47fc915a8259b5b52f3a89167d0f4cd",
-          }
-          sha_pattern = re.compile(r"[0-9a-f]{64}")
 
           manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-          for key, value in expected_metadata.items():
-              assert manifest.get(key) == value, f"manifest {key}: {manifest.get(key)!r} != {value!r}"
+          assert manifest["schema_version"] == "1.0"
+          assert manifest["campaign_id"] == "BP-SCOPE-CONTROL-RUNTIME-001"
+          assert manifest["artifact_class"] == "PUBLIC_QUALIFICATION_PROOF"
+          assert manifest["public_runtime_source_distributed_at_head"] is False
+          assert manifest["history_rewritten"] is False
+          assert manifest["canonical_constitution_sha256"] == canonical_sha
+          assert manifest["qualification_results"]["internal_runtime_tests"] == "25/25 PASS"
+          assert manifest["qualification_results"]["paired_engine_matrix"] == "16/16 PASS"
+          assert manifest["qualification_results"]["ask_engine"] == "QUALIFIED"
+          assert manifest["qualification_results"]["ask_live_host"] == "UNPROVEN"
+          assert manifest["qualification_results"]["ask_host_obedience"] == "UNPROVEN"
+          assert set(manifest["limitations"]) == {
+              "LIM-1", "LIM-2", "LIM-3", "LIM-4", "LIM-5",
+              "LIM-6", "LIM-7", "LIM-8a", "LIM-8b", "LIM-8c",
+          }
+          assert manifest["active_distribution_boundary"]["runtime_directory_tracked_files"] == [runtime_readme]
+          assert manifest["active_distribution_boundary"]["implementation_distributed"] is False
+          assert not old_manifest.exists()
 
-          distributed = manifest.get("distributed_files")
-          excluded = manifest.get("excluded_files")
-          assert isinstance(distributed, list) and len(distributed) == 18
-          assert isinstance(excluded, list) and len(excluded) == 2
-          assert manifest["distributed_runtime_file_count"] == len(distributed)
+          actual_runtime = subprocess.check_output(
+              ["git", "ls-files", "--", "products/behavior-profiles/runtime"],
+              text=True,
+          ).splitlines()
+          assert actual_runtime == [runtime_readme], f"unexpected Runtime mechanism at HEAD: {actual_runtime}"
 
-          distributed_fields = {"source_path", "destination_path", "sha256", "classification"}
-          excluded_fields = {"source_path", "sha256", "classification", "reason"}
-          sources = []
-          destinations = []
-          for record in distributed:
-              assert set(record) == distributed_fields, f"unexpected distributed fields: {record}"
-              source = record["source_path"]
-              destination = record["destination_path"]
-              digest = record["sha256"]
-              assert record["classification"] == "PUBLIC_DISTRIBUTABLE"
-              assert source == destination, f"source/destination drift: {source} != {destination}"
-              assert destination.startswith(runtime_root)
-              assert "\\" not in destination
-              path = PurePosixPath(destination)
-              assert not path.is_absolute() and ".." not in path.parts
-              assert sha_pattern.fullmatch(digest), f"malformed SHA-256: {digest}"
-              sources.append(source)
-              destinations.append(destination)
-
-          assert len(set(sources)) == 18, "duplicate distributed source"
-          assert len(set(destinations)) == 18, "duplicate distributed destination"
-
-          actual_tracked = set(
-              subprocess.check_output(
-                  ["git", "ls-files", "--", runtime_root.rstrip("/")], text=True
-              ).splitlines()
-          )
-          expected_tracked = set(destinations)
-          assert actual_tracked == expected_tracked, (
-              f"Runtime closed-set mismatch; missing={sorted(expected_tracked - actual_tracked)}, "
-              f"unexpected={sorted(actual_tracked - expected_tracked)}"
-          )
-
-          for record in distributed:
-              data = Path(record["destination_path"]).read_bytes()
-              actual_sha = hashlib.sha256(data).hexdigest()
-              assert actual_sha == record["sha256"], (
-                  f"Runtime hash mismatch: {record['destination_path']} "
-                  f"{actual_sha} != {record['sha256']}"
-              )
-
-          exclusion_map = {}
-          for record in excluded:
-              assert set(record) == excluded_fields, f"unexpected exclusion fields: {record}"
-              assert record["classification"] == "SOVEREIGN_QUALIFICATION_ONLY"
-              assert record["reason"], "exclusion reason is required"
-              assert sha_pattern.fullmatch(record["sha256"]), f"malformed exclusion SHA-256: {record}"
-              exclusion_map[record["source_path"]] = record["sha256"]
-          assert exclusion_map == expected_exclusions, f"exclusion ledger drift: {exclusion_map}"
-          assert expected_tracked.isdisjoint(exclusion_map), "exclusion appears in distributed set"
-          for excluded_path in expected_exclusions:
-              assert excluded_path not in actual_tracked
-              assert not Path(excluded_path).exists(), f"excluded verifier exists: {excluded_path}"
-
-          constitution_paths = [
+          constitutions = [
               Path("scope-control/BEHAVIOR_PROFILE_SCOPE_CONTROL.md"),
               Path("products/behavior-profiles/scope-control/BEHAVIOR_PROFILE_SCOPE_CONTROL.md"),
           ]
-          constitution_hashes = [hashlib.sha256(path.read_bytes()).hexdigest() for path in constitution_paths]
-          assert constitution_hashes == [canonical_sha, canonical_sha], (
-              f"constitution drift: {constitution_hashes}"
-          )
+          hashes = [hashlib.sha256(path.read_bytes()).hexdigest() for path in constitutions]
+          assert hashes == [canonical_sha, canonical_sha], f"constitution drift: {hashes}"
 
-          print("Public Runtime projection integrity: PASS")
-          print("Tracked Runtime closed set: 18/18")
-          print("Runtime hashes: 18/18")
-          print("Sovereign verifier exclusions: 2/2")
+          print("Runtime public boundary: proof and architecture only")
+          print("Tracked Runtime mechanism files: 0")
+          print("Qualification identities and limitations: PASS")
+          print("ASK boundary: engine qualified / live host unproven")
           print("Dual constitutions: canonical and byte-identical")
-          print("Test cardinalities: internal 25, public 21, engine matrix 16")
           PY

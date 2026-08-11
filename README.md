@@ -170,7 +170,9 @@ Qualification limitations:
 - **LIM-8b:** Windows is the tested operating-system topology.
 - **LIM-8c:** Qualification passed with declared retained dependencies; environmental independence is not established.
 
-The internal qualification suite remains `25/25`. This public projection intentionally omits two sovereign qualification-evidence verification files, so its distributable Runtime suite is `21/21`. Every distributed Runtime file remains byte-identical to the qualified source tree.
+The internal qualification suite remains `25/25`, with a `16/16` paired engine matrix. The public repository preserves the qualification claim, identities, limitations, architecture, and historical publication record, but active HEAD does not distribute the executable Runtime mechanism. See the [Runtime architecture and qualification page](products/behavior-profiles/runtime/README.md) and [public qualification manifest](products/behavior-profiles/PUBLIC_RUNTIME_QUALIFICATION_MANIFEST_v0_1.json).
+
+The implementation appeared in earlier public commits. Those commits remain in ordinary Git history; this forward correction does not rewrite or erase that history.
 
 ## Boundary
 

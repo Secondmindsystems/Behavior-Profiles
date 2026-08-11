@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0",
+  "campaign_id": "BP-SCOPE-CONTROL-RUNTIME-001",
+  "artifact_id": "SCOPE_CONTROL_RUNTIME_PUBLIC_QUALIFICATION_PROOF_v0_1",
+  "artifact_class": "PUBLIC_QUALIFICATION_PROOF",
+  "public_runtime_source_distributed_at_head": false,
+  "history_rewritten": false,
+  "qualified_runtime_commit": "fcfc2ddfc3b12f1cb755dcc8b8b5fac1608e24c8",
+  "qualification_commit": "85ab8ab006413c0995044c92d993535805111ce2",
+  "qualification_record_sha256": "bf7fc7192f42dcdc23d1050913930efb2b4a99eae8185e21a3f4557d3538242a",
+  "canonical_constitution_sha256": "769385360202ad58557d52ab1d3b9e1d3419a056b50f513af66d3604dab0e1d6",
+  "initial_public_runtime_commit": "7ee5ed589ef007747ff03cd93dcf3ddd33677052",
+  "public_projection_integrity_commit": "09b1cd915343802b76d817415e0d9fba9eee17c4",
+  "qualified_host": "Claude Code 2.1.137",
+  "tested_topology": "Windows with retained authenticated-session infrastructure",
+  "qualification_topology": {
+    "builder": "Codex",
+    "non_builder_evidence_runner": "Fable",
+    "adjudicator": "Nova",
+    "independent_external_validation": false
+  },
+  "qualification_results": {
+    "internal_runtime_tests": "25/25 PASS",
+    "paired_engine_matrix": "16/16 PASS",
+    "allow_live_host": "QUALIFIED",
+    "block_live_host": "QUALIFIED",
+    "defer_live_host": "QUALIFIED",
+    "defer_distinct_durable_artifact": "PROVEN",
+    "ask_engine": "QUALIFIED",
+    "ask_live_host": "UNPROVEN",
+    "ask_host_obedience": "UNPROVEN"
+  },
+  "maximum_claim": "Scope Control Runtime v0.1 evaluated proposed agent actions against a declared task boundary before execution through one qualified Claude Code PreToolUse integration surface on pinned Claude Code 2.1.137 in the tested Windows, authenticated-session topology. On the tested live subset, the host honored ALLOW, BLOCK, and DEFER decisions, and DEFER produced a distinct durable deferred item. ASK is qualified at the deterministic decision-engine level only; its live host projection remains unproven.",
+  "limitations": {
+    "LIM-1": "ASK host seam and host obedience are unproven.",
+    "LIM-2": "Qualification is pinned to Claude Code 2.1.137.",
+    "LIM-3": "The evidence is a bounded live sample and does not establish reliability or production stability.",
+    "LIM-4": "Shell governance was limited to a frozen deterministic supported grammar.",
+    "LIM-5": "One adapter and one client were qualified; cross-client compatibility is not established.",
+    "LIM-6": "The Runtime is local, experimental, default-off, and non-production.",
+    "LIM-7": "Qualification history was local and single-machine at publication time.",
+    "LIM-8a": "Authenticated Claude session infrastructure was retained.",
+    "LIM-8b": "Windows is the tested operating-system topology.",
+    "LIM-8c": "Qualification passed with declared retained dependencies; environmental independence is not established."
+  },
+  "active_distribution_boundary": {
+    "runtime_directory_tracked_files": [
+      "products/behavior-profiles/runtime/README.md"
+    ],
+    "implementation_distributed": false,
+    "proof_and_architecture_distributed": true,
+    "historical_commits_preserved": true
+  }
+}
