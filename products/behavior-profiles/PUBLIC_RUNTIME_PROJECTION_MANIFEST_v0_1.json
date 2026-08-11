@@ -1,0 +1,139 @@
+{
+  "schema_version": "1.0",
+  "campaign_id": "BP-SCOPE-CONTROL-RUNTIME-001",
+  "projection_id": "SCOPE_CONTROL_RUNTIME_PUBLIC_PROJECTION_v0_1",
+  "projection_class": "PUBLIC_DISTRIBUTION_PROJECTION",
+  "qualified_runtime_commit": "fcfc2ddfc3b12f1cb755dcc8b8b5fac1608e24c8",
+  "qualification_commit": "85ab8ab006413c0995044c92d993535805111ce2",
+  "public_projection_basis": "7ee5ed589ef007747ff03cd93dcf3ddd33677052",
+  "canonical_constitution_sha256": "769385360202ad58557d52ab1d3b9e1d3419a056b50f513af66d3604dab0e1d6",
+  "qualified_source_file_count": 20,
+  "distributed_runtime_file_count": 18,
+  "internal_qualification_test_count": 25,
+  "public_projection_test_count": 21,
+  "engine_matrix_case_count": 16,
+  "distributed_files": [
+    {
+      "source_path": "products/behavior-profiles/runtime/.gitignore",
+      "destination_path": "products/behavior-profiles/runtime/.gitignore",
+      "sha256": "6feaded4e28ea86e001a6751b4e3d960e8b7c31b9616ff9936b79297086e809b",
+      "classification": "PUBLIC_DISTRIBUTABLE"
+    },
+    {
+      "source_path": "products/behavior-profiles/runtime/README.md",
+      "destination_path": "products/behavior-profiles/runtime/README.md",
+      "sha256": "c2a4c128e6e46abdc91a19599a7cf0609cb02735696cbf1c3e3dbee520c11af5",
+      "classification": "PUBLIC_DISTRIBUTABLE"
+    },
+    {
+      "source_path": "products/behavior-profiles/runtime/SHELL_COMMAND_POLICY_v0_1.json",
+      "destination_path": "products/behavior-profiles/runtime/SHELL_COMMAND_POLICY_v0_1.json",
+      "sha256": "7dd8869ceb016b08dfa336c917926b600caca30d41ab2e4124b80771fba77a77",
+      "classification": "PUBLIC_DISTRIBUTABLE"
+    },
+    {
+      "source_path": "products/behavior-profiles/runtime/adapters/__init__.py",
+      "destination_path": "products/behavior-profiles/runtime/adapters/__init__.py",
+      "sha256": "e303d248a69ae47e24bbc9aad7dd6dfbf88ab259988857b96006d4ddc8d4305f",
+      "classification": "PUBLIC_DISTRIBUTABLE"
+    },
+    {
+      "source_path": "products/behavior-profiles/runtime/adapters/claude_code.py",
+      "destination_path": "products/behavior-profiles/runtime/adapters/claude_code.py",
+      "sha256": "7ed2f1c48a9da5242707455314a7b2c0a68b8b06efdafa4eb76b6884fbb92641",
+      "classification": "PUBLIC_DISTRIBUTABLE"
+    },
+    {
+      "source_path": "products/behavior-profiles/runtime/contracts/scope_control.contract.json",
+      "destination_path": "products/behavior-profiles/runtime/contracts/scope_control.contract.json",
+      "sha256": "7ff2140f583fc523544a99e88c2b2b8f66bb723109cf655da1ab003e6d476ab6",
+      "classification": "PUBLIC_DISTRIBUTABLE"
+    },
+    {
+      "source_path": "products/behavior-profiles/runtime/contracts/task_authority.schema.json",
+      "destination_path": "products/behavior-profiles/runtime/contracts/task_authority.schema.json",
+      "sha256": "9dae803804701a9bb7c7e093249714447ddba6a49d3eabe81b172eea4a10bdfb",
+      "classification": "PUBLIC_DISTRIBUTABLE"
+    },
+    {
+      "source_path": "products/behavior-profiles/runtime/fixtures/engine_matrix.json",
+      "destination_path": "products/behavior-profiles/runtime/fixtures/engine_matrix.json",
+      "sha256": "4991ca4cc1edab1b3c0c231e2a47ed95be65f9482cbe6585df883aa108b09c7f",
+      "classification": "PUBLIC_DISTRIBUTABLE"
+    },
+    {
+      "source_path": "products/behavior-profiles/runtime/scope_runtime/__init__.py",
+      "destination_path": "products/behavior-profiles/runtime/scope_runtime/__init__.py",
+      "sha256": "de78980d35ea7190b7c8ec83f97802280837db70a14dfdd7982c7cc73de30b41",
+      "classification": "PUBLIC_DISTRIBUTABLE"
+    },
+    {
+      "source_path": "products/behavior-profiles/runtime/scope_runtime/engine.py",
+      "destination_path": "products/behavior-profiles/runtime/scope_runtime/engine.py",
+      "sha256": "57b0d04c6793a4ed5d058bf7f36def59b4c818d000f66f195d8e85ec69140c53",
+      "classification": "PUBLIC_DISTRIBUTABLE"
+    },
+    {
+      "source_path": "products/behavior-profiles/runtime/scope_runtime/evidence.py",
+      "destination_path": "products/behavior-profiles/runtime/scope_runtime/evidence.py",
+      "sha256": "3541e893b871df5a0bc3fc8614811ca413161da3ed1bf86f1eb2cff0f53c8dd3",
+      "classification": "PUBLIC_DISTRIBUTABLE"
+    },
+    {
+      "source_path": "products/behavior-profiles/runtime/scope_runtime/shell_policy.py",
+      "destination_path": "products/behavior-profiles/runtime/scope_runtime/shell_policy.py",
+      "sha256": "bc311e3d0a51bded52401e7d174d0ddd3f64df61d3b52221648869223e5eea7c",
+      "classification": "PUBLIC_DISTRIBUTABLE"
+    },
+    {
+      "source_path": "products/behavior-profiles/runtime/tests/test_claude_adapter.py",
+      "destination_path": "products/behavior-profiles/runtime/tests/test_claude_adapter.py",
+      "sha256": "022711eb40d604305975c7aca910060c1e1a43ca05cfd41349fa3d71cd4c8f01",
+      "classification": "PUBLIC_DISTRIBUTABLE"
+    },
+    {
+      "source_path": "products/behavior-profiles/runtime/tests/test_contract_projection.py",
+      "destination_path": "products/behavior-profiles/runtime/tests/test_contract_projection.py",
+      "sha256": "db0b9985f6657d20a793f87a3bc9da3921745b489e6722b7f24f43880e19b132",
+      "classification": "PUBLIC_DISTRIBUTABLE"
+    },
+    {
+      "source_path": "products/behavior-profiles/runtime/tests/test_engine.py",
+      "destination_path": "products/behavior-profiles/runtime/tests/test_engine.py",
+      "sha256": "100e10d9ff9b0475f4013826b10d631d512df5ed981a3a01616feb4095ea9ec9",
+      "classification": "PUBLIC_DISTRIBUTABLE"
+    },
+    {
+      "source_path": "products/behavior-profiles/runtime/tools/claude_hook.py",
+      "destination_path": "products/behavior-profiles/runtime/tools/claude_hook.py",
+      "sha256": "eaaca7088dc4c7efb1957db7d191ed4c5495fc779c5f6e838cec498a47dbf6ed",
+      "classification": "PUBLIC_DISTRIBUTABLE"
+    },
+    {
+      "source_path": "products/behavior-profiles/runtime/tools/run_engine_matrix.py",
+      "destination_path": "products/behavior-profiles/runtime/tools/run_engine_matrix.py",
+      "sha256": "2f4bfd80f8f0b078f01f06596a5bf5fc9d1f227ce8aada4d9c8c7eab2bd570f0",
+      "classification": "PUBLIC_DISTRIBUTABLE"
+    },
+    {
+      "source_path": "products/behavior-profiles/runtime/tools/verify_contract.py",
+      "destination_path": "products/behavior-profiles/runtime/tools/verify_contract.py",
+      "sha256": "91d9289bdfbcff3a8536d9b2a985933c22c4533ac615bac7fae88802e772ccdd",
+      "classification": "PUBLIC_DISTRIBUTABLE"
+    }
+  ],
+  "excluded_files": [
+    {
+      "source_path": "products/behavior-profiles/runtime/tests/test_qualification_verifier.py",
+      "sha256": "52340b1787b9a3e7f31068ce628c229a6e33b9a75c47ef08d0bb0a5cba6bcabf",
+      "classification": "SOVEREIGN_QUALIFICATION_ONLY",
+      "reason": "Depends on private sovereign qualification evidence under campaigns/bp-scope-control-runtime-001/** and is not load-bearing for distributed Runtime behavior."
+    },
+    {
+      "source_path": "products/behavior-profiles/runtime/tools/verify_runtime_qualification.py",
+      "sha256": "57d5543e43ecfbeb320b29e663ae82b5b47fc915a8259b5b52f3a89167d0f4cd",
+      "classification": "SOVEREIGN_QUALIFICATION_ONLY",
+      "reason": "Depends on private sovereign qualification evidence under campaigns/bp-scope-control-runtime-001/** and is not load-bearing for distributed Runtime behavior."
+    }
+  ]
+}
