@@ -33,3 +33,7 @@ jobs:
           --suite harness/profiles/scope-control/suite.json
           --observations harness/profiles/scope-control/controls.json
           --profile scope-control/BEHAVIOR_PROFILE_SCOPE_CONTROL.md
+      - name: Run runtime tests
+        run: python -B -m unittest discover -s products/behavior-profiles/runtime/tests -p "test_*.py"
+      - name: Verify runtime engine matrix
+        run: python -B products/behavior-profiles/runtime/tools/run_engine_matrix.py

@@ -151,6 +151,27 @@ After publication, use the repository issue forms to [report an installation res
 - [Governed Repo demo](https://github.com/Secondmindsystems/governed-change-demo)
 - [Second Mind Systems](https://github.com/Secondmindsystems/second-mind-systems)
 
+## Scope Control Runtime v0.1 (Level 3)
+
+Scope Control Runtime is a distinct experimental enforcement layer for proposed actions. It is separate from the instruction-layer Behavior Profile materials above. Earlier descriptions that profiles do not enforce or block actions apply to those instruction-layer materials, not to this Runtime layer.
+
+> **Scope Control Runtime v0.1 evaluated proposed agent actions against a declared task boundary before execution through one qualified Claude Code PreToolUse integration surface on pinned Claude Code 2.1.137 in the tested Windows, authenticated-session topology. On the tested live subset, the host honored ALLOW, BLOCK, and DEFER decisions, and DEFER produced a distinct durable deferred item. ASK is qualified at the deterministic decision-engine level only; its live host projection remains unproven.**
+
+Qualification limitations:
+
+- **LIM-1:** ASK is qualified in the deterministic engine; its live Claude Code host seam and host obedience remain unproven.
+- **LIM-2:** Qualification is pinned to Claude Code 2.1.137.
+- **LIM-3:** The evidence is a bounded live sample and does not establish reliability or production stability.
+- **LIM-4:** Shell governance covers only the frozen deterministic supported grammar.
+- **LIM-5:** One adapter and one client are qualified; cross-client compatibility is not established.
+- **LIM-6:** The Runtime is local, experimental, default-off, and non-production.
+- **LIM-7:** Qualification history is local and single-machine at publication time.
+- **LIM-8a:** Authenticated Claude session infrastructure was retained.
+- **LIM-8b:** Windows is the tested operating-system topology.
+- **LIM-8c:** Qualification passed with declared retained dependencies; environmental independence is not established.
+
+The internal qualification suite remains `25/25`. This public projection intentionally omits two sovereign qualification-evidence verification files, so its distributable Runtime suite is `21/21`. Every distributed Runtime file remains byte-identical to the qualified source tree.
+
 ## Boundary
 
 This repository provides instruction-layer artifacts, fixtures, evidence templates, and a package-integrity verifier.

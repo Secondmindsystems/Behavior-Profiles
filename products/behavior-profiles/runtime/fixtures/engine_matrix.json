@@ -1,0 +1,157 @@
+{
+  "schema_version": "0.1",
+  "pairs": [
+    {
+      "id": "F1",
+      "description": "authorized edit",
+      "changed_field": "action.target",
+      "observations": [
+        {
+          "name": "authorized",
+          "expected": "ALLOW",
+          "authority": {"task_id":"task-1","requested_task":"Edit the authorized file","authorized_paths":["C:/fixture/authorized.txt"],"no_touch_paths":["C:/fixture/protected.txt"],"authorized_action_classes":["edit"],"ask_conditions":[],"schema_version":"0.1"},
+          "action": {"schema_version":"0.1","action_id":"F1-A","action_class":"edit","target":"C:/fixture/authorized.txt","target_candidates":[],"command":null,"structural_flags":[]}
+        },
+        {
+          "name": "outside-authorized",
+          "expected": "DEFER",
+          "authority": {"task_id":"task-1","requested_task":"Edit the authorized file","authorized_paths":["C:/fixture/authorized.txt"],"no_touch_paths":["C:/fixture/protected.txt"],"authorized_action_classes":["edit"],"ask_conditions":[],"schema_version":"0.1"},
+          "action": {"schema_version":"0.1","action_id":"F1-A","action_class":"edit","target":"C:/fixture/adjacent.txt","target_candidates":[],"command":null,"structural_flags":[]}
+        }
+      ]
+    },
+    {
+      "id": "F2",
+      "description": "no-touch target",
+      "changed_field": "authority.no_touch_paths",
+      "observations": [
+        {
+          "name": "no-touch",
+          "expected": "BLOCK",
+          "authority": {"task_id":"task-2","requested_task":"Edit one file","authorized_paths":["C:/fixture/*.txt"],"no_touch_paths":["C:/fixture/protected.txt"],"authorized_action_classes":["edit"],"ask_conditions":[],"schema_version":"0.1"},
+          "action": {"schema_version":"0.1","action_id":"F2-A","action_class":"edit","target":"C:/fixture/protected.txt","target_candidates":[],"command":null,"structural_flags":[]}
+        },
+        {
+          "name": "not-no-touch",
+          "expected": "ALLOW",
+          "authority": {"task_id":"task-2","requested_task":"Edit one file","authorized_paths":["C:/fixture/*.txt"],"no_touch_paths":[],"authorized_action_classes":["edit"],"ask_conditions":[],"schema_version":"0.1"},
+          "action": {"schema_version":"0.1","action_id":"F2-A","action_class":"edit","target":"C:/fixture/protected.txt","target_candidates":[],"command":null,"structural_flags":[]}
+        }
+      ]
+    },
+    {
+      "id": "F3",
+      "description": "deterministic adjacent action",
+      "changed_field": "authority.authorized_paths",
+      "observations": [
+        {
+          "name": "adjacent",
+          "expected": "DEFER",
+          "authority": {"task_id":"task-3","requested_task":"Edit declared target","authorized_paths":["C:/fixture/authorized.txt"],"no_touch_paths":[],"authorized_action_classes":["edit"],"ask_conditions":[],"schema_version":"0.1"},
+          "action": {"schema_version":"0.1","action_id":"F3-A","action_class":"edit","target":"C:/fixture/adjacent.txt","target_candidates":[],"command":null,"structural_flags":[]}
+        },
+        {
+          "name": "declared",
+          "expected": "ALLOW",
+          "authority": {"task_id":"task-3","requested_task":"Edit declared target","authorized_paths":["C:/fixture/adjacent.txt"],"no_touch_paths":[],"authorized_action_classes":["edit"],"ask_conditions":[],"schema_version":"0.1"},
+          "action": {"schema_version":"0.1","action_id":"F3-A","action_class":"edit","target":"C:/fixture/adjacent.txt","target_candidates":[],"command":null,"structural_flags":[]}
+        }
+      ]
+    },
+    {
+      "id": "F4",
+      "description": "structural ambiguity",
+      "changed_field": "action.structural_flags",
+      "observations": [
+        {
+          "name": "ambiguous",
+          "expected": "ASK",
+          "authority": {"task_id":"task-4","requested_task":"Edit a deployment target","authorized_paths":["C:/fixture/*.json"],"no_touch_paths":[],"authorized_action_classes":["edit"],"ask_conditions":["MULTIPLE_MATCHING_TARGETS"],"schema_version":"0.1"},
+          "action": {"schema_version":"0.1","action_id":"F4-A","action_class":"edit","target":"C:/fixture/a.json","target_candidates":["C:/fixture/a.json","C:/fixture/b.json"],"command":null,"structural_flags":["MULTIPLE_MATCHING_TARGETS"]}
+        },
+        {
+          "name": "unambiguous",
+          "expected": "ALLOW",
+          "authority": {"task_id":"task-4","requested_task":"Edit a deployment target","authorized_paths":["C:/fixture/*.json"],"no_touch_paths":[],"authorized_action_classes":["edit"],"ask_conditions":["MULTIPLE_MATCHING_TARGETS"],"schema_version":"0.1"},
+          "action": {"schema_version":"0.1","action_id":"F4-A","action_class":"edit","target":"C:/fixture/a.json","target_candidates":["C:/fixture/a.json","C:/fixture/b.json"],"command":null,"structural_flags":[]}
+        }
+      ]
+    },
+    {
+      "id": "F5",
+      "description": "unauthorized action class",
+      "changed_field": "authority.authorized_action_classes",
+      "observations": [
+        {
+          "name": "unauthorized-class",
+          "expected": "BLOCK",
+          "authority": {"task_id":"task-5","requested_task":"Read a file","authorized_paths":["C:/fixture/authorized.txt"],"no_touch_paths":[],"authorized_action_classes":["read"],"ask_conditions":[],"schema_version":"0.1"},
+          "action": {"schema_version":"0.1","action_id":"F5-A","action_class":"delete","target":"C:/fixture/authorized.txt","target_candidates":[],"command":null,"structural_flags":[]}
+        },
+        {
+          "name": "authorized-class",
+          "expected": "ALLOW",
+          "authority": {"task_id":"task-5","requested_task":"Read a file","authorized_paths":["C:/fixture/authorized.txt"],"no_touch_paths":[],"authorized_action_classes":["read","delete"],"ask_conditions":[],"schema_version":"0.1"},
+          "action": {"schema_version":"0.1","action_id":"F5-A","action_class":"delete","target":"C:/fixture/authorized.txt","target_candidates":[],"command":null,"structural_flags":[]}
+        }
+      ]
+    },
+    {
+      "id": "F6",
+      "description": "supported authorized command",
+      "changed_field": "action.command",
+      "observations": [
+        {
+          "name": "supported",
+          "expected": "ALLOW",
+          "authority": {"task_id":"task-6","requested_task":"Read the authorized file","authorized_paths":["C:/fixture/authorized.txt"],"no_touch_paths":[],"authorized_action_classes":["shell_exec"],"ask_conditions":[],"schema_version":"0.1"},
+          "action": {"schema_version":"0.1","action_id":"F6-A","action_class":"shell_exec","target":null,"target_candidates":[],"command":"Get-Content -LiteralPath C:/fixture/authorized.txt","structural_flags":[]}
+        },
+        {
+          "name": "pipeline-unsupported",
+          "expected": "BLOCK",
+          "authority": {"task_id":"task-6","requested_task":"Read the authorized file","authorized_paths":["C:/fixture/authorized.txt"],"no_touch_paths":[],"authorized_action_classes":["shell_exec"],"ask_conditions":[],"schema_version":"0.1"},
+          "action": {"schema_version":"0.1","action_id":"F6-A","action_class":"shell_exec","target":null,"target_candidates":[],"command":"Get-Content -LiteralPath C:/fixture/authorized.txt | Select-Object -First 1","structural_flags":[]}
+        }
+      ]
+    },
+    {
+      "id": "F7",
+      "description": "malformed authority",
+      "changed_field": "authority.task_id",
+      "observations": [
+        {
+          "name": "missing-task-id",
+          "expected": "BLOCK",
+          "authority": {"requested_task":"Edit file","authorized_paths":["C:/fixture/authorized.txt"],"no_touch_paths":[],"authorized_action_classes":["edit"],"ask_conditions":[],"schema_version":"0.1"},
+          "action": {"schema_version":"0.1","action_id":"F7-A","action_class":"edit","target":"C:/fixture/authorized.txt","target_candidates":[],"command":null,"structural_flags":[]}
+        },
+        {
+          "name": "valid-authority",
+          "expected": "ALLOW",
+          "authority": {"task_id":"task-7","requested_task":"Edit file","authorized_paths":["C:/fixture/authorized.txt"],"no_touch_paths":[],"authorized_action_classes":["edit"],"ask_conditions":[],"schema_version":"0.1"},
+          "action": {"schema_version":"0.1","action_id":"F7-A","action_class":"edit","target":"C:/fixture/authorized.txt","target_candidates":[],"command":null,"structural_flags":[]}
+        }
+      ]
+    },
+    {
+      "id": "F8",
+      "description": "malformed host event",
+      "changed_field": "action.action_id",
+      "observations": [
+        {
+          "name": "missing-action-id",
+          "expected": "BLOCK",
+          "authority": {"task_id":"task-8","requested_task":"Edit file","authorized_paths":["C:/fixture/authorized.txt"],"no_touch_paths":[],"authorized_action_classes":["edit"],"ask_conditions":[],"schema_version":"0.1"},
+          "action": {"schema_version":"0.1","action_class":"edit","target":"C:/fixture/authorized.txt","target_candidates":[],"command":null,"structural_flags":[]}
+        },
+        {
+          "name": "valid-event",
+          "expected": "ALLOW",
+          "authority": {"task_id":"task-8","requested_task":"Edit file","authorized_paths":["C:/fixture/authorized.txt"],"no_touch_paths":[],"authorized_action_classes":["edit"],"ask_conditions":[],"schema_version":"0.1"},
+          "action": {"schema_version":"0.1","action_id":"F8-A","action_class":"edit","target":"C:/fixture/authorized.txt","target_candidates":[],"command":null,"structural_flags":[]}
+        }
+      ]
+    }
+  ]
+}

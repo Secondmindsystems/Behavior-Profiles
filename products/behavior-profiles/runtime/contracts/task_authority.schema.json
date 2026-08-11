@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://secondmindsystems.local/behavior-profiles/runtime/task-authority-v0.1.schema.json",
+  "title": "Scope Control Runtime Task Authority v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "task_id",
+    "requested_task",
+    "authorized_paths",
+    "no_touch_paths",
+    "authorized_action_classes",
+    "ask_conditions",
+    "schema_version"
+  ],
+  "properties": {
+    "task_id": {"type": "string", "minLength": 1},
+    "requested_task": {"type": "string", "minLength": 1},
+    "authorized_paths": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "no_touch_paths": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "authorized_action_classes": {
+      "type": "array",
+      "items": {
+        "enum": ["read", "edit", "create", "delete", "shell_exec", "vcs_write"]
+      },
+      "uniqueItems": true
+    },
+    "ask_conditions": {
+      "type": "array",
+      "items": {"enum": ["MULTIPLE_MATCHING_TARGETS", "MISSING_TARGET"]},
+      "uniqueItems": true
+    },
+    "schema_version": {"const": "0.1"}
+  }
+}

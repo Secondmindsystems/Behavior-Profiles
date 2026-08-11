@@ -1,0 +1,23 @@
+{
+  "policy_id": "scope-control-shell-policy-v0.1",
+  "supported_forms": [
+    {
+      "id": "powershell-get-content-literal-path",
+      "grammar": "Get-Content -LiteralPath <single quoted or unquoted literal path>",
+      "action_class": "shell_exec",
+      "target_count": 1
+    }
+  ],
+  "forbidden_syntax": [
+    "pipelines",
+    "redirection",
+    "command chaining",
+    "command substitution",
+    "wildcards",
+    "environment-variable expansion"
+  ],
+  "unsupported_result": "BLOCK",
+  "unsupported_reason": "UNSUPPORTED_COMMAND_FORM",
+  "unparseable_reason": "UNPARSEABLE_COMMAND",
+  "claim_boundary": "Only the frozen supported command subset is classified and governed deterministically."
+}
