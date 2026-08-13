@@ -53,6 +53,8 @@ These are different evidence roles. Synthetic controls test the harness, not an 
 
 ## Start in Five Minutes
 
+**[Try Scope Control on your own agent — start with a five-minute test.](profiles/scope-control/TRY_IT.md)**
+
 1. Open [Behavior Profile: Scope Control](profiles/scope-control/BEHAVIOR_PROFILE.md).
 2. Add it to the instruction surface your agent reads.
 3. Run the [quick test](profiles/scope-control/QUICK_TEST.md).
