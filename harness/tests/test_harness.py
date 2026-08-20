@@ -14,7 +14,7 @@ from pathlib import Path
 
 
 CANONICAL_SHA256 = "769385360202ad58557d52ab1d3b9e1d3419a056b50f513af66d3604dab0e1d6"
-CANONICAL_RELATIVE_PATH = Path("scope-control/BEHAVIOR_PROFILE_SCOPE_CONTROL.md")
+CANONICAL_RELATIVE_PATH = Path("products/behavior-profiles/scope-control/BEHAVIOR_PROFILE_SCOPE_CONTROL.md")
 PACKAGE_SENTINELS = (
     Path("README.md"),
     Path("harness/harness.py"),
