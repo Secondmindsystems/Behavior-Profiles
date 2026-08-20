@@ -225,7 +225,7 @@ Add the complete installable Scope Control profile to the applicable `AGENTS.md`
 
 A repository-root `AGENTS.md` can provide repository-wide conduct. A nested file can apply the profile to a narrower subtree when the agent supports that behavior.
 
-[AGENTS.md installation guide](../../../adapters/agents-md/README.md)
+[AGENTS.md installation guide](../adapters/agents-md/README.md)
 
 ### Claude Code
 
@@ -233,7 +233,7 @@ Add the complete profile to the applicable project `CLAUDE.md`.
 
 Keep project-specific instructions and no-touch boundaries explicit, and confirm that the file is inside the instruction scope Claude Code actually reads.
 
-[Claude Code / CLAUDE.md installation guide](../../../adapters/claude-code/README.md)
+[Claude Code / CLAUDE.md installation guide](../adapters/claude-code/README.md)
 
 ### Other agents
 
@@ -241,13 +241,13 @@ If another agent supports durable project, workspace, or reusable instructions, 
 
 Check instruction precedence and whether a nearer instruction or user prompt can override it.
 
-[Generic installation guide](../../../adapters/generic/README.md)
+[Generic installation guide](../adapters/generic/README.md)
 
 If the agent has no durable instruction surface, treat the profile as task-local rather than claiming persistence.
 
 The installable profile is here:
 
-[Installable Scope Control profile](../../../profiles/scope-control/BEHAVIOR_PROFILE.md)
+[Installable Scope Control profile](../profiles/scope-control/BEHAVIOR_PROFILE.md)
 
 **Installation makes the conduct contract available to the agent. It does not prove that the agent followed it.**
 
@@ -267,11 +267,11 @@ The public experience contains three bounded scenarios:
 
 **STOP:** encounter incomplete authority and ask for the missing decision rather than guessing.
 
-[Try the ACT / DEFER / STOP experience](../../../profiles/scope-control/TRY_IT.md)
+[Try the ACT / DEFER / STOP experience](../profiles/scope-control/TRY_IT.md)
 
 For a shorter entry point:
 
-[Run the five-minute quick test](../../../profiles/scope-control/QUICK_TEST.md)
+[Run the five-minute quick test](../profiles/scope-control/QUICK_TEST.md)
 
 Do not use a production or sensitive repository for the test.
 
@@ -373,9 +373,9 @@ It does not establish:
 - other operating systems;
 - consistent behavior across every model or environment.
 
-[Scope Control Runtime architecture and qualification](../runtime/README.md)
+[Scope Control Runtime architecture and qualification](../products/behavior-profiles/runtime/README.md)
 
-[Public Runtime qualification manifest](../PUBLIC_RUNTIME_QUALIFICATION_MANIFEST_v0_1.json)
+[Public Runtime qualification manifest](../products/behavior-profiles/PUBLIC_RUNTIME_QUALIFICATION_MANIFEST_v0_1.json)
 
 The executable Runtime mechanism is not distributed at active HEAD.
 
