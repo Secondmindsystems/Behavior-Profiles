@@ -17,7 +17,7 @@ HARNESS = importlib.util.module_from_spec(SPEC)
 sys.modules[SPEC.name] = HARNESS
 SPEC.loader.exec_module(HARNESS)
 
-CANONICAL_PATH = Path("scope-control/BEHAVIOR_PROFILE_SCOPE_CONTROL.md")
+CANONICAL_PATH = Path("products/behavior-profiles/scope-control/BEHAVIOR_PROFILE_SCOPE_CONTROL.md")
 INSTALLABLE_PATH = Path("profiles/scope-control/BEHAVIOR_PROFILE.md")
 AGENT_EVIDENCE_PATH = Path("profiles/scope-control/evidence/internal-dogfood-002.json")
 SYNTHETIC_EVIDENCE_PATH = Path("harness/evidence/pass-1-control-run.json")
@@ -48,13 +48,13 @@ def read_source(args: argparse.Namespace, package_root: Path) -> tuple[bytes, di
         source_path = (package_root / args.source_file).resolve()
         return source_path.read_bytes(), {"source": "filesystem", "path": args.source_file}
     raw = subprocess.check_output(
-        ["git", "show", f"{args.source_ref}:products/behavior-profiles/{CANONICAL_PATH.as_posix()}"],
+        ["git", "show", f"{args.source_ref}:{CANONICAL_PATH.as_posix()}"],
         cwd=args.repo_root,
     )
     return raw, {
         "source": "git",
         "ref": args.source_ref,
-        "path": f"products/behavior-profiles/{CANONICAL_PATH.as_posix()}",
+        "path": CANONICAL_PATH.as_posix(),
     }
 
 
