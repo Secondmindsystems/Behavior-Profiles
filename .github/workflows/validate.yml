@@ -26,13 +26,13 @@ jobs:
       - name: Run harness tests
         run: python -B -m unittest discover -s harness/tests -p "test_*.py"
       - name: Verify frozen publication identities
-        run: python -B tools/check_scope_control_publication_state.py --source-file scope-control/BEHAVIOR_PROFILE_SCOPE_CONTROL.md
+        run: python -B tools/check_scope_control_publication_state.py --source-file products/behavior-profiles/scope-control/BEHAVIOR_PROFILE_SCOPE_CONTROL.md
       - name: Verify paired control discrimination
         run: >-
           python -B harness/harness.py run-controls
           --suite harness/profiles/scope-control/suite.json
           --observations harness/profiles/scope-control/controls.json
-          --profile scope-control/BEHAVIOR_PROFILE_SCOPE_CONTROL.md
+          --profile products/behavior-profiles/scope-control/BEHAVIOR_PROFILE_SCOPE_CONTROL.md
       - name: Verify Runtime proof-only boundary
         run: |
           python - <<'PY'
@@ -77,11 +77,11 @@ jobs:
               Path("products/behavior-profiles/scope-control/BEHAVIOR_PROFILE_SCOPE_CONTROL.md"),
           ]
           hashes = [hashlib.sha256(path.read_bytes()).hexdigest() for path in constitutions]
-          assert hashes == [canonical_sha, canonical_sha], f"constitution drift: {hashes}"
+          assert hashes == [canonical_sha], f"constitution drift: {hashes}"
 
           print("Runtime public boundary: proof and architecture only")
           print("Tracked Runtime mechanism files: 0")
           print("Qualification identities and limitations: PASS")
           print("ASK boundary: engine qualified / live host unproven")
-          print("Dual constitutions: canonical and byte-identical")
+          print("Canonical constitution: authoritative product path verified")
           PY
