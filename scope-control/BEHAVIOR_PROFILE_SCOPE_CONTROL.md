@@ -2,7 +2,7 @@
 
 ## The Meta Layer Behind Agent Skills
 
-**Skills expand what an agent can do. Behavior Profiles make explicit how the agent is expected to behave while using those capabilities.**
+**Skills expand what an agent can do. Behavior Profiles make explicit how the agent is expected to behave while using those skills/capabilities.**
 
 A Behavior Profile is a portable conduct contract for an AI agent.
 
