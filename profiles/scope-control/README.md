@@ -21,15 +21,13 @@ After the task, it returns a short completion note describing what it changed an
 
 The idea is simple: **make scope decisions visible instead of letting them happen silently.**
 
-## Install
+## Install Scope Control
 
-Use the complete [BEHAVIOR_PROFILE.md](BEHAVIOR_PROFILE.md) with the instruction surface your agent reads:
+Open the [complete, verified Scope Control profile](https://github.com/Secondmindsystems/Behavior-Profiles/blob/main/profiles/scope-control/BEHAVIOR_PROFILE.md?plain=1), copy the entire file, and add it to the project-instruction surface your agent reads—such as `AGENTS.md` or `CLAUDE.md`.
 
-* [AGENTS.md](../../adapters/agents-md/README.md)
-* [Claude Code / CLAUDE.md](../../adapters/claude-code/README.md)
-* [Other durable instruction surfaces](../../adapters/generic/README.md)
+Already have project instructions? Add Scope Control without replacing the instructions already there.
 
-Check your agent's instruction precedence so you know the profile applies to the workspace where you're using it.
+**That's it.** Save the file, then [try the three Scope Control scenarios](TRY_IT.md).
 
 ## Try It
 
