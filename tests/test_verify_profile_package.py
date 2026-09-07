@@ -22,7 +22,7 @@ class VerifyProfilePackageTests(unittest.TestCase):
     def test_repository_release_is_blocked_without_dogfood(self) -> None:
         evidence_path = MODULE.EVIDENCE_PATH
         try:
-            MODULE.EVIDENCE_PATH = Path("profiles/scope-control/evidence/absent-test-record.json")
+            MODULE.EVIDENCE_PATH = Path("docs/evidence/scope-control/runs/absent-test-record.json")
             result = MODULE.verify(ROOT, mode="release")
         finally:
             MODULE.EVIDENCE_PATH = evidence_path
@@ -58,17 +58,28 @@ class VerifyProfilePackageTests(unittest.TestCase):
             {
                 "source": "git",
                 "ref": "main",
-                "path": "products/behavior-profiles/scope-control/BEHAVIOR_PROFILE_SCOPE_CONTROL.md",
-                "sha256": "769385360202ad58557d52ab1d3b9e1d3419a056b50f513af66d3604dab0e1d6",
+                "path": "profiles/scope-control/BEHAVIOR_PROFILE.md",
+                "sha256": "8ebe592498af4fd5d5a4517cd68e02b03400c68ed1040cc21fcb1e161192cf1e",
             },
             result["canonical_profile_identity"],
         )
 
-    def test_package_profile_is_declared_equivalent_not_canonical(self) -> None:
+    def test_package_profile_is_the_canonical_installable_artifact(self) -> None:
         result = MODULE.verify(ROOT, mode="package")
         self.assertEqual(
-            "EQUIVALENT_REPRESENTATION",
+            "CANONICAL_INSTALLABLE_ARTIFACT",
             result["package_profile_identity"]["classification"],
+        )
+
+    def test_historical_canonical_identity_is_preserved(self) -> None:
+        result = MODULE.verify(ROOT, mode="package")
+        self.assertEqual(
+            "FROZEN_HISTORICAL_CANONICAL_ARTIFACT",
+            result["historical_canonical_identity"]["classification"],
+        )
+        self.assertEqual(
+            "769385360202ad58557d52ab1d3b9e1d3419a056b50f513af66d3604dab0e1d6",
+            result["historical_canonical_identity"]["sha256"],
         )
         self.assertEqual(
             "8ebe592498af4fd5d5a4517cd68e02b03400c68ed1040cc21fcb1e161192cf1e",

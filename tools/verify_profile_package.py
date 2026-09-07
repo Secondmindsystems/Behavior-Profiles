@@ -13,14 +13,16 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-EVIDENCE_PATH = Path("profiles/scope-control/evidence/internal-dogfood-002.json")
+EVIDENCE_PATH = Path("docs/evidence/scope-control/runs/internal-dogfood-002.json")
 CANONICAL_REF = "main"
-CANONICAL_REPO_PATH = "products/behavior-profiles/scope-control/BEHAVIOR_PROFILE_SCOPE_CONTROL.md"
-CANONICAL_PACKAGE_PATH = Path("products/behavior-profiles/scope-control/BEHAVIOR_PROFILE_SCOPE_CONTROL.md")
-CANONICAL_SHA256 = "769385360202ad58557d52ab1d3b9e1d3419a056b50f513af66d3604dab0e1d6"
+CANONICAL_REPO_PATH = "profiles/scope-control/BEHAVIOR_PROFILE.md"
+CANONICAL_PACKAGE_PATH = Path("profiles/scope-control/BEHAVIOR_PROFILE.md")
+CANONICAL_SHA256 = "8ebe592498af4fd5d5a4517cd68e02b03400c68ed1040cc21fcb1e161192cf1e"
 PACKAGE_PROFILE_PATH = Path("profiles/scope-control/BEHAVIOR_PROFILE.md")
 PACKAGE_PROFILE_SHA256 = "8ebe592498af4fd5d5a4517cd68e02b03400c68ed1040cc21fcb1e161192cf1e"
-PACKAGE_PROFILE_CLASSIFICATION = "EQUIVALENT_REPRESENTATION"
+PACKAGE_PROFILE_CLASSIFICATION = "CANONICAL_INSTALLABLE_ARTIFACT"
+HISTORICAL_CANONICAL_PATH = Path("docs/history/scope-control/CANONICAL_PRODUCT_SOURCE_v0_1.md")
+HISTORICAL_CANONICAL_SHA256 = "769385360202ad58557d52ab1d3b9e1d3419a056b50f513af66d3604dab0e1d6"
 PROOF_BOUNDARY = (
     "Verifies package integrity and, in release mode, one declared internal dogfood record; "
     "does not establish universal agent obedience, safety, enforcement, cross-model consistency, "
@@ -35,7 +37,6 @@ REQUIRED_LIMITATION = (
 
 PACKAGE_REQUIRED_FILES = (
     "README.md",
-    "BEHAVIOR_PROFILES.md",
     "FORMAT.md",
     "LICENSE",
     "TRADEMARKS.md",
@@ -43,18 +44,20 @@ PACKAGE_REQUIRED_FILES = (
     "LIMITATIONS.md",
     "profiles/scope-control/README.md",
     "profiles/scope-control/BEHAVIOR_PROFILE.md",
-    "profiles/scope-control/QUICK_TEST.md",
-    "profiles/scope-control/LIMITATIONS.md",
-    "profiles/scope-control/EVIDENCE_TEMPLATE.md",
-    "profiles/scope-control/EVIDENCE_RECORD_TEMPLATE.json",
-    "profiles/scope-control/DOGFOOD_PROTOCOL.md",
-    "profiles/scope-control/DOGFOOD_MANIFEST.json",
-    "scope-control/BEHAVIOR_PROFILE_SCOPE_CONTROL.md",
+    "profiles/scope-control/TRY_IT.md",
+    "docs/evidence/scope-control/EVIDENCE_TEMPLATE.md",
+    "docs/evidence/scope-control/EVIDENCE_RECORD_TEMPLATE.json",
+    "docs/evidence/scope-control/DOGFOOD_PROTOCOL.md",
+    "docs/evidence/scope-control/DOGFOOD_MANIFEST.json",
+    "docs/history/scope-control/CANONICAL_PRODUCT_SOURCE_v0_1.md",
+    "docs/history/scope-control/BEHAVIOR_PROFILE_SCOPE_CONTROL_v0_1.md",
+    "docs/history/scope-control/adapters/agents-md/README.md",
+    "docs/history/scope-control/adapters/claude-code/README.md",
+    "docs/history/scope-control/adapters/generic/README.md",
+    "docs/runtime/scope-control/README.md",
+    "docs/runtime/scope-control/PUBLIC_RUNTIME_QUALIFICATION_MANIFEST_v0_1.json",
     "harness/harness.py",
     "harness/profiles/scope-control/suite.json",
-    "adapters/agents-md/README.md",
-    "adapters/claude-code/README.md",
-    "adapters/generic/README.md",
     "tests/fixtures/authorized-execution/fixture.json",
     "tests/fixtures/expansion-pressure/fixture.json",
     "tests/fixtures/ambiguous-authority/fixture.json",
@@ -98,6 +101,14 @@ EVIDENCE_REQUIRED_FIELDS = (
 
 BANNED_URL_HOSTS = ("chatgpt.com", "claude.ai", "openai.com")
 MARKDOWN_LINK = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
+
+HISTORICAL_PATH_RELOCATIONS = {
+    "profiles/scope-control/DOGFOOD_MANIFEST.json": "docs/evidence/scope-control/DOGFOOD_MANIFEST.json",
+    "adapters/agents-md/README.md": "docs/history/scope-control/adapters/agents-md/README.md",
+}
+HISTORICAL_PREFIX_RELOCATIONS = {
+    "profiles/scope-control/evidence/": "docs/evidence/scope-control/runs/",
+}
 
 
 def sha256(path: Path) -> str:
@@ -164,6 +175,17 @@ def resolve_inside(root: Path, relative: object) -> Path | None:
     return resolved
 
 
+def resolve_evidence_reference(root: Path, relative: object) -> Path | None:
+    if not isinstance(relative, str) or not relative:
+        return None
+    relocated = HISTORICAL_PATH_RELOCATIONS.get(relative, relative)
+    for old_prefix, new_prefix in HISTORICAL_PREFIX_RELOCATIONS.items():
+        if relocated.startswith(old_prefix):
+            relocated = new_prefix + relocated[len(old_prefix):]
+            break
+    return resolve_inside(root, relocated)
+
+
 def fixture_map(root: Path, errors: list[str]) -> dict[str, tuple[Path, dict[str, object]]]:
     fixtures: dict[str, tuple[Path, dict[str, object]]] = {}
     for fixture_path in sorted((root / "tests/fixtures").glob("*/fixture.json")):
@@ -228,21 +250,26 @@ def verify_package(root: Path = ROOT) -> dict[str, object]:
             f"canonical Scope Control satisfies 19/19 structural assertions: {canonical_label()}"
         )
 
+    historical_canonical = root / HISTORICAL_CANONICAL_PATH
+    if sha256(historical_canonical) != HISTORICAL_CANONICAL_SHA256:
+        errors.append("historical Scope Control canonical identity mismatch")
+    else:
+        checks.append("historical Scope Control canonical identity preserved")
+
     package_structural, package_structural_error = check_structural_profile(root, package_profile)
     if sha256(package_profile) != PACKAGE_PROFILE_SHA256:
-        errors.append("declared equivalent Scope Control representation hash mismatch")
+        errors.append("canonical installable Scope Control artifact hash mismatch")
     elif package_structural_error:
         errors.append(package_structural_error)
     elif package_structural is None or package_structural.get("decision") != "PASS":
-        errors.append("declared equivalent Scope Control representation fails structural conformance")
+        errors.append("canonical installable Scope Control artifact fails structural conformance")
     elif len(package_structural.get("criteria", [])) != 19:
-        errors.append("equivalent Scope Control representation assertion count is not 19")
+        errors.append("canonical installable Scope Control artifact assertion count is not 19")
     else:
         checks.append(
-            "package Scope Control profile is an EQUIVALENT_REPRESENTATION at "
+            "package Scope Control profile is the CANONICAL_INSTALLABLE_ARTIFACT at "
             f"path={PACKAGE_PROFILE_PATH.as_posix()} sha256={PACKAGE_PROFILE_SHA256}; "
-            "it satisfies the same 19/19 structural assertions and is not canonical; "
-            f"canonical={canonical_label()}"
+            "it satisfies 19/19 structural assertions"
         )
 
     fixtures = fixture_map(root, errors)
@@ -251,7 +278,7 @@ def verify_package(root: Path = ROOT) -> dict[str, object]:
     else:
         errors.append(f"expected 3 unique fixtures, found {len(fixtures)}")
 
-    manifest_path = root / "profiles/scope-control/DOGFOOD_MANIFEST.json"
+    manifest_path = root / "docs/evidence/scope-control/DOGFOOD_MANIFEST.json"
     try:
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
@@ -264,7 +291,7 @@ def verify_package(root: Path = ROOT) -> dict[str, object]:
         errors.append("dogfood manifest profile path mismatch")
     if manifest_profile.get("sha256") != sha256(package_profile):
         errors.append("dogfood manifest profile hash mismatch")
-    adapter_path = root / "adapters/agents-md/README.md"
+    adapter_path = root / "docs/history/scope-control/adapters/agents-md/README.md"
     if manifest_adapter.get("sha256") != sha256(adapter_path):
         errors.append("dogfood manifest adapter hash mismatch")
     manifest_by_id = {
@@ -283,7 +310,7 @@ def verify_package(root: Path = ROOT) -> dict[str, object]:
     if not any("dogfood manifest" in error for error in errors):
         checks.append("dogfood manifest freezes profile, adapter, fixtures, and prompts")
 
-    evidence_text = (root / "profiles/scope-control/EVIDENCE_TEMPLATE.md").read_text(encoding="utf-8")
+    evidence_text = (root / "docs/evidence/scope-control/EVIDENCE_TEMPLATE.md").read_text(encoding="utf-8")
     for heading in REQUIRED_EVIDENCE_HEADINGS:
         if heading not in evidence_text:
             errors.append(f"evidence template missing heading: {heading}")
@@ -291,6 +318,8 @@ def verify_package(root: Path = ROOT) -> dict[str, object]:
         checks.append("evidence template headings complete")
 
     for markdown in sorted(root.rglob("*.md")):
+        if markdown.is_relative_to(root / "docs/history"):
+            continue
         content = markdown.read_text(encoding="utf-8")
         lowered = content.lower()
         for host in BANNED_URL_HOSTS:
@@ -335,7 +364,7 @@ def validate_release_evidence(root: Path, evidence: object) -> tuple[list[str], 
         for field in ("profile_id", "version", "path", "sha256"):
             if not profile.get(field):
                 errors.append(f"profile evidence missing field: {field}")
-        profile_path = resolve_inside(root, profile.get("path"))
+        profile_path = resolve_evidence_reference(root, profile.get("path"))
         if profile_path is None or not profile_path.is_file():
             errors.append("profile evidence path is missing or outside package")
         elif profile.get("sha256") != sha256(profile_path):
@@ -355,14 +384,14 @@ def validate_release_evidence(root: Path, evidence: object) -> tuple[list[str], 
         ):
             if not adapter.get(field):
                 errors.append(f"adapter evidence missing field: {field}")
-        adapter_path = resolve_inside(root, adapter.get("path"))
+        adapter_path = resolve_evidence_reference(root, adapter.get("path"))
         if adapter_path is None or not adapter_path.is_file():
             errors.append("adapter evidence path is missing or outside package")
         elif adapter.get("sha256") != sha256(adapter_path):
             errors.append("adapter evidence hash does not match frozen adapter")
         else:
             checks.append("adapter identity and hash match")
-        installed = resolve_inside(root, adapter.get("installed_instruction_reference"))
+        installed = resolve_evidence_reference(root, adapter.get("installed_instruction_reference"))
         if installed is None or not installed.is_file():
             errors.append("installed instruction reference is missing or outside package")
         elif adapter.get("installed_instruction_sha256") != sha256(installed):
@@ -439,7 +468,7 @@ def validate_release_evidence(root: Path, evidence: object) -> tuple[list[str], 
                 "pre_run_manifest_reference",
                 "post_run_manifest_reference",
             ):
-                reference = resolve_inside(root, session.get(reference_field))
+                reference = resolve_evidence_reference(root, session.get(reference_field))
                 if reference is None or not reference.is_file():
                     errors.append(f"{prefix} {reference_field} is missing or outside package")
 
@@ -515,6 +544,13 @@ def decision(
             "path": PACKAGE_PROFILE_PATH.as_posix(),
             "sha256": sha256(root / PACKAGE_PROFILE_PATH)
             if (root / PACKAGE_PROFILE_PATH).is_file()
+            else None,
+        },
+        "historical_canonical_identity": {
+            "classification": "FROZEN_HISTORICAL_CANONICAL_ARTIFACT",
+            "path": HISTORICAL_CANONICAL_PATH.as_posix(),
+            "sha256": sha256(root / HISTORICAL_CANONICAL_PATH)
+            if (root / HISTORICAL_CANONICAL_PATH).is_file()
             else None,
         },
         "checks": sorted(checks),

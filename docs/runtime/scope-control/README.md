@@ -23,6 +23,6 @@ The internal qualification reported `25/25` Runtime tests and a `16/16` paired e
 
 This evidence does not establish universal enforcement, a security boundary, production reliability, production readiness, arbitrary-shell understanding, cross-client compatibility, all Claude Code versions, other operating systems, unauthenticated topology, or live ASK host behavior.
 
-See [`PUBLIC_RUNTIME_QUALIFICATION_MANIFEST_v0_1.json`](../PUBLIC_RUNTIME_QUALIFICATION_MANIFEST_v0_1.json) for frozen identities, evidence roles, and the complete limitation register.
+See [`PUBLIC_RUNTIME_QUALIFICATION_MANIFEST_v0_1.json`](PUBLIC_RUNTIME_QUALIFICATION_MANIFEST_v0_1.json) for frozen identities, evidence roles, and the complete limitation register.
 
 The implementation appeared in earlier public commits. Those commits remain in ordinary Git history; this forward correction does not rewrite or erase that history.

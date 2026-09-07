@@ -50,11 +50,11 @@ From the repository root:
 python -B tools/verify_profile_package.py --mode release
 python -B harness/harness.py check-profile `
   --suite harness/profiles/scope-control/suite.json `
-  --profile products/behavior-profiles/scope-control/BEHAVIOR_PROFILE_SCOPE_CONTROL.md
+  --profile profiles/scope-control/BEHAVIOR_PROFILE.md
 python -B harness/harness.py run-controls `
   --suite harness/profiles/scope-control/suite.json `
   --observations harness/profiles/scope-control/controls.json `
-  --profile products/behavior-profiles/scope-control/BEHAVIOR_PROFILE_SCOPE_CONTROL.md
+  --profile profiles/scope-control/BEHAVIOR_PROFILE.md
 ```
 
 The first command checks package integrity and the bound internal dogfood record. The second checks the canonical profile against 19 structural assertions. The third runs eight paired synthetic controls and must discriminate all eight conforming observations from all eight non-conforming observations.
@@ -72,17 +72,9 @@ That non-zero exit is expected. The decoy contains familiar Scope Control words 
 
 Synthetic controls test whether the harness distinguishes the supplied observations. They do not test an agent. The internal dogfood records document a separate bounded agent-observation campaign.
 
-See the [harness guide](harness/README.md) and [dogfood protocol](profiles/scope-control/DOGFOOD_PROTOCOL.md) for the methods and deeper technical checks.
+See the [harness guide](harness/README.md) and [dogfood protocol](docs/evidence/scope-control/DOGFOOD_PROTOCOL.md) for the methods and deeper technical checks.
 
 A verifier PASS does not establish that an agent followed the profile. Behavioral evidence comes from observed runs in the environment where the profile is used.
-
-## Install Surfaces
-
-* [AGENTS.md installation](adapters/agents-md/README.md)
-* [Claude Code / CLAUDE.md installation](adapters/claude-code/README.md)
-* [Generic durable instruction-surface installation](adapters/generic/README.md)
-
-Each adapter explains where the profile goes, relevant instruction-precedence considerations, and how to test the installation.
 
 ## Profile Format and Contributions
 
@@ -100,7 +92,7 @@ A recorded Windows trial used Claude Code 2.1.137 and its PreToolUse integration
 
 The active repository publishes the architecture and qualification records rather than the executable runtime. Earlier implementation commits remain in Git history.
 
-Read the [runtime qualification page](products/behavior-profiles/runtime/README.md) for the pinned environment, tested grammar, results, and operating conditions.
+Read the [runtime qualification page](docs/runtime/scope-control/README.md) for the pinned environment, tested grammar, results, and operating conditions.
 
 The runtime experiment is separate from the installable instruction profile above.
 
@@ -110,7 +102,6 @@ For the original category argument and publication context, read [**The Meta Lay
 
 Related work:
 
-* [Governance Loops](governance-loops.md)
 * [AI Protected Paths](https://github.com/Secondmindsystems/ai-protected-paths)
 * [Governed Change Demo](https://github.com/Secondmindsystems/governed-change-demo)
 * [Engineering Portfolio](https://github.com/Secondmindsystems/governed-ai-systems-portfolio)

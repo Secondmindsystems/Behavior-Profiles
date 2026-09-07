@@ -1,6 +1,7 @@
 # Behavior Profiles Conformance Harness
 
-This harness turns a Behavior Profile into a bounded, testable behavioral specification.
+The harness checks the structure of a Behavior Profile and evaluates supplied
+observations against fixed scenario criteria.
 
 It separates four questions:
 
@@ -22,27 +23,18 @@ Pass 1 contains:
 
 Synthetic controls test the harness, not an agent. They must never be represented as agent evidence, independent validation, cross-client evidence, or proof of general effectiveness.
 
-## Commands
+## Run the current public package
 
-From `products/behavior-profiles`:
+Use the [commands in the repository README](../README.md#check-the-package-and-test-harness)
+from the repository root. They point to the files shipped in this checkout.
 
-```powershell
-python harness/harness.py check-profile `
-  --suite harness/profiles/scope-control/suite.json `
-  --git-ref main `
-  --git-path products/behavior-profiles/scope-control/BEHAVIOR_PROFILE_SCOPE_CONTROL.md `
-  --repo-root ../..
+## Historical source identity
 
-python harness/harness.py run-controls `
-  --suite harness/profiles/scope-control/suite.json `
-  --observations harness/profiles/scope-control/controls.json `
-  --git-ref main `
-  --git-path products/behavior-profiles/scope-control/BEHAVIOR_PROFILE_SCOPE_CONTROL.md `
-  --repo-root ../.. `
-  --output harness/evidence/pass-1-control-run.json
-
-python -m unittest discover -s harness/tests -p "test_*.py"
-```
+Earlier qualification used a different canonical source path and artifact.
+Those exact predecessor bytes remain preserved at
+[`docs/history/scope-control/CANONICAL_PRODUCT_SOURCE_v0_1.md`](../docs/history/scope-control/CANONICAL_PRODUCT_SOURCE_v0_1.md),
+and the [migration record](../docs/history/scope-control/CANONICAL_IDENTITY_MIGRATION.md)
+explains how that identity relates to the current installable profile.
 
 ## Claim ceiling
 
@@ -50,7 +42,8 @@ If the structural check, paired controls, and harness tests pass, the supported 
 
 > Scope Control has been converted from prose into a testable behavioral specification with machine-checkable structural requirements and adversarial behavioral fixtures. The harness discriminates between its frozen conforming and non-conforming control observations.
 
-This does not establish agent obedience, cross-client conformance, portability, enforcement, safety, certification, production reliability, or general effectiveness.
+These results test the profile structure and the supplied control observations;
+agent behavior is evaluated separately from observed agent runs.
 
 ## Normalization boundary
 

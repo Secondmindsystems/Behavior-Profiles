@@ -26,13 +26,13 @@ jobs:
       - name: Run harness tests
         run: python -B -m unittest discover -s harness/tests -p "test_*.py"
       - name: Verify frozen publication identities
-        run: python -B tools/check_scope_control_publication_state.py --source-file products/behavior-profiles/scope-control/BEHAVIOR_PROFILE_SCOPE_CONTROL.md
+        run: python -B tools/check_scope_control_publication_state.py --source-file profiles/scope-control/BEHAVIOR_PROFILE.md
       - name: Verify paired control discrimination
         run: >-
           python -B harness/harness.py run-controls
           --suite harness/profiles/scope-control/suite.json
           --observations harness/profiles/scope-control/controls.json
-          --profile products/behavior-profiles/scope-control/BEHAVIOR_PROFILE_SCOPE_CONTROL.md
+          --profile profiles/scope-control/BEHAVIOR_PROFILE.md
       - name: Verify Runtime proof-only boundary
         run: |
           python - <<'PY'
@@ -41,9 +41,10 @@ jobs:
           import subprocess
           from pathlib import Path
 
-          manifest_path = Path("products/behavior-profiles/PUBLIC_RUNTIME_QUALIFICATION_MANIFEST_v0_1.json")
+          manifest_path = Path("docs/runtime/scope-control/PUBLIC_RUNTIME_QUALIFICATION_MANIFEST_v0_1.json")
           old_manifest = Path("products/behavior-profiles/PUBLIC_RUNTIME_PROJECTION_MANIFEST_v0_1.json")
-          runtime_readme = "products/behavior-profiles/runtime/README.md"
+          historical_runtime_readme = "products/behavior-profiles/runtime/README.md"
+          runtime_readme = "docs/runtime/scope-control/README.md"
           canonical_sha = "769385360202ad58557d52ab1d3b9e1d3419a056b50f513af66d3604dab0e1d6"
 
           manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
@@ -62,18 +63,21 @@ jobs:
               "LIM-1", "LIM-2", "LIM-3", "LIM-4", "LIM-5",
               "LIM-6", "LIM-7", "LIM-8a", "LIM-8b", "LIM-8c",
           }
-          assert manifest["active_distribution_boundary"]["runtime_directory_tracked_files"] == [runtime_readme]
+          assert manifest["active_distribution_boundary"]["runtime_directory_tracked_files"] == [historical_runtime_readme]
           assert manifest["active_distribution_boundary"]["implementation_distributed"] is False
           assert not old_manifest.exists()
 
           actual_runtime = subprocess.check_output(
-              ["git", "ls-files", "--", "products/behavior-profiles/runtime"],
+              ["git", "ls-files", "--", "docs/runtime/scope-control"],
               text=True,
           ).splitlines()
-          assert actual_runtime == [runtime_readme], f"unexpected Runtime mechanism at HEAD: {actual_runtime}"
+          assert actual_runtime == [
+              "docs/runtime/scope-control/PUBLIC_RUNTIME_QUALIFICATION_MANIFEST_v0_1.json",
+              runtime_readme,
+          ], f"unexpected Runtime publication surface at HEAD: {actual_runtime}"
 
           constitutions = [
-              Path("products/behavior-profiles/scope-control/BEHAVIOR_PROFILE_SCOPE_CONTROL.md"),
+              Path("docs/history/scope-control/CANONICAL_PRODUCT_SOURCE_v0_1.md"),
           ]
           hashes = [hashlib.sha256(path.read_bytes()).hexdigest() for path in constitutions]
           assert hashes == [canonical_sha], f"constitution drift: {hashes}"
@@ -82,5 +86,5 @@ jobs:
           print("Tracked Runtime mechanism files: 0")
           print("Qualification identities and limitations: PASS")
           print("ASK boundary: engine qualified / live host unproven")
-          print("Canonical constitution: authoritative product path verified")
+          print("Historical qualified constitution: frozen identity verified")
           PY

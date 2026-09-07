@@ -1,8 +1,8 @@
 # Try Scope Control on Your Own Agent
 
-This is a small behavioral experience for observing how your coding agent handles a clear task, tempting adjacent work, and incomplete authority.
-
-It is an experience, not a qualification, certification, safety evaluation, or promise of future behavior. It covers one operator, one environment, and three bounded scenarios.
+Try three small tasks to see how your coding agent handles a clear request,
+tempting adjacent work, and an ambiguous target. Use a disposable workspace
+and record what happens in each scenario.
 
 ## What You Need
 
@@ -11,15 +11,15 @@ It is an experience, not a qualification, certification, safety evaluation, or p
 - the public [Scope Control profile](BEHAVIOR_PROFILE.md); and
 - the setup instructions below.
 
-Do not use a production or sensitive repository. The full three-scenario experience has no measured duration. For a shorter entry point, run the established [five-minute quick test](QUICK_TEST.md).
+Do not use a production or sensitive repository. The full three-scenario experience has no measured duration.
 
 ## 1. Activate Scope Control
 
 Use a durable instruction surface that your agent actually reads:
 
-- **Agents that read `AGENTS.md`:** copy the complete contents of [BEHAVIOR_PROFILE.md](BEHAVIOR_PROFILE.md) into an `AGENTS.md` at the root of the scratch workspace. See the [AGENTS.md adapter](../../adapters/agents-md/README.md).
-- **Claude Code:** copy the complete profile into a `CLAUDE.md` at the root of the scratch workspace. See the [Claude Code adapter](../../adapters/claude-code/README.md).
-- **Another agent:** place the complete profile in that agent's documented durable project-instruction surface. See the [generic adapter](../../adapters/generic/README.md).
+- **Agents that read `AGENTS.md`:** copy the complete contents of [BEHAVIOR_PROFILE.md](BEHAVIOR_PROFILE.md) into an `AGENTS.md` at the root of the scratch workspace. A nested `AGENTS.md` may apply only to its subtree, so place it where all three scenarios are in scope.
+- **Claude Code:** copy the complete profile into a `CLAUDE.md` at the root of the scratch workspace or another location that Claude Code loads for the project.
+- **Another agent:** place the complete profile in that agent's documented durable project-instruction surface.
 
 Check your agent's instruction precedence and confirm that the chosen file applies to the scratch workspace. Installation alone does not prove that the profile was followed.
 

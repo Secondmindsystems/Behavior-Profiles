@@ -17,16 +17,18 @@ HARNESS = importlib.util.module_from_spec(SPEC)
 sys.modules[SPEC.name] = HARNESS
 SPEC.loader.exec_module(HARNESS)
 
-CANONICAL_PATH = Path("products/behavior-profiles/scope-control/BEHAVIOR_PROFILE_SCOPE_CONTROL.md")
-INSTALLABLE_PATH = Path("profiles/scope-control/BEHAVIOR_PROFILE.md")
-AGENT_EVIDENCE_PATH = Path("profiles/scope-control/evidence/internal-dogfood-002.json")
+CANONICAL_PATH = Path("profiles/scope-control/BEHAVIOR_PROFILE.md")
+INSTALLABLE_PATH = CANONICAL_PATH
+HISTORICAL_CANONICAL_PATH = Path("docs/history/scope-control/CANONICAL_PRODUCT_SOURCE_v0_1.md")
+AGENT_EVIDENCE_PATH = Path("docs/evidence/scope-control/runs/internal-dogfood-002.json")
 SYNTHETIC_EVIDENCE_PATH = Path("harness/evidence/pass-1-control-run.json")
 SUITE_PATH = Path("harness/profiles/scope-control/suite.json")
 NEGATIVE_CONTROL_PATH = Path("harness/profiles/scope-control/vocabulary-without-structure.md")
 
 EXPECTED_HASHES = {
-    "canonical_product_profile": "769385360202ad58557d52ab1d3b9e1d3419a056b50f513af66d3604dab0e1d6",
+    "canonical_product_profile": "8ebe592498af4fd5d5a4517cd68e02b03400c68ed1040cc21fcb1e161192cf1e",
     "tested_installable_profile": "8ebe592498af4fd5d5a4517cd68e02b03400c68ed1040cc21fcb1e161192cf1e",
+    "historical_canonical_profile": "769385360202ad58557d52ab1d3b9e1d3419a056b50f513af66d3604dab0e1d6",
     "internal_agent_evidence": "511c1abfafec0a353e6f61e610a3a1969ace4eb0d70cd7afb61d3a3e31c5c6fb",
     "synthetic_harness_evidence": "fb026c59ffd134857a8008328f084c8b21f856a37a0ac01f836c4329ce86c79a",
 }
@@ -63,6 +65,7 @@ def check(package_root: Path, source_raw: bytes, source_identity: dict[str, str]
     files = {
         "canonical_product_profile": CANONICAL_PATH,
         "tested_installable_profile": INSTALLABLE_PATH,
+        "historical_canonical_profile": HISTORICAL_CANONICAL_PATH,
         "internal_agent_evidence": AGENT_EVIDENCE_PATH,
         "synthetic_harness_evidence": SYNTHETIC_EVIDENCE_PATH,
     }
@@ -88,6 +91,7 @@ def check(package_root: Path, source_raw: bytes, source_identity: dict[str, str]
     for label, path in {
         "canonical_product_profile": canonical_path,
         "tested_installable_profile": package_root / INSTALLABLE_PATH,
+        "historical_canonical_profile": package_root / HISTORICAL_CANONICAL_PATH,
         "vocabulary_without_structure": package_root / NEGATIVE_CONTROL_PATH,
     }.items():
         if not path.is_file():
@@ -100,6 +104,8 @@ def check(package_root: Path, source_raw: bytes, source_identity: dict[str, str]
         errors.append("canonical product profile failed structural conformance")
     if structural_results.get("tested_installable_profile") != "PASS":
         errors.append("tested installable profile failed structural conformance")
+    if structural_results.get("historical_canonical_profile") != "PASS":
+        errors.append("historical canonical profile failed structural conformance")
     if structural_results.get("vocabulary_without_structure") != "FAIL":
         errors.append("vocabulary-only negative control did not fail")
 
@@ -122,7 +128,7 @@ def main() -> int:
     source.add_argument("--source-file")
     source.add_argument("--source-ref", default="main")
     parser.add_argument("--package-root", type=Path, default=ROOT)
-    parser.add_argument("--repo-root", type=Path, default=ROOT.parents[1])
+    parser.add_argument("--repo-root", type=Path, default=ROOT)
     args = parser.parse_args()
     package_root = args.package_root.resolve()
     try:

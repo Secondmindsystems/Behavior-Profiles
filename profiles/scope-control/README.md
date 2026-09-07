@@ -37,21 +37,13 @@ Start with [TRY_IT](TRY_IT.md). It gives you three short situations:
 * **DEFER** adjacent work that falls outside the request.
 * **STOP** when the target or authority is incomplete.
 
-For a shorter structural check, use [QUICK_TEST](QUICK_TEST.md).
-
-## Record What Happened
-
-Use the [evidence template](EVIDENCE_TEMPLATE.md) to record `PASS`, `FAIL`, or `CONFUSED`.
-
-Record the environment, profile version, task, expected conduct, observed conduct, and anything that made the result difficult to interpret.
+The same page includes a compact place to record `PASS`, `FAIL`, or `CONFUSED` for each scenario.
 
 ## When Instruction Is Not Enough
 
 Scope Control supplies instructions. It does not block files or commands.
 
 When a repository boundary needs an executable checkpoint, use a separate control. [AI Protected Paths](https://github.com/Secondmindsystems/ai-protected-paths) requires one-use approval before configured paths can enter a local Git commit.
-
-See [LIMITATIONS](LIMITATIONS.md) for the profile's operating boundaries.
 
 ## About Behavior Profiles
 

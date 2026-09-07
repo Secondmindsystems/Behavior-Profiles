@@ -13,8 +13,8 @@ import unittest
 from pathlib import Path
 
 
-CANONICAL_SHA256 = "769385360202ad58557d52ab1d3b9e1d3419a056b50f513af66d3604dab0e1d6"
-CANONICAL_RELATIVE_PATH = Path("products/behavior-profiles/scope-control/BEHAVIOR_PROFILE_SCOPE_CONTROL.md")
+CANONICAL_SHA256 = "8ebe592498af4fd5d5a4517cd68e02b03400c68ed1040cc21fcb1e161192cf1e"
+CANONICAL_RELATIVE_PATH = Path("profiles/scope-control/BEHAVIOR_PROFILE.md")
 PACKAGE_SENTINELS = (
     Path("README.md"),
     Path("harness/harness.py"),
@@ -122,29 +122,29 @@ class HarnessTests(unittest.TestCase):
                 self.assertEqual("PASS", result["decision"], result["errors"])
 
     def test_removing_one_required_field_fails_only_that_assertion(self) -> None:
-        malformed = self.canonical_text.replace("* Files touched\n", "", 1)
+        malformed = self.canonical_text.replace("- Files touched\n", "", 1)
         result = MODULE.check_profile(self.suite, malformed)
         failed = [item["assertion_id"] for item in result["criteria"] if item["status"] == "FAIL"]
         self.assertEqual("FAIL", result["decision"])
         self.assertEqual(["completion_files_touched"], failed)
 
     def test_materially_altering_one_field_fails_only_that_assertion(self) -> None:
-        malformed = self.canonical_text.replace("* Files touched", "* Files modified", 1)
+        malformed = self.canonical_text.replace("- Files touched", "- Files modified", 1)
         result = MODULE.check_profile(self.suite, malformed)
         failed = [item["assertion_id"] for item in result["criteria"] if item["status"] == "FAIL"]
         self.assertEqual(["completion_files_touched"], failed)
 
     def test_valid_field_in_wrong_section_does_not_satisfy_contract(self) -> None:
-        malformed = self.canonical_text.replace("* Files touched\n", "", 1)
+        malformed = self.canonical_text.replace("- Files touched\n", "", 1)
         malformed = malformed.replace(
-            "## Scope Behavior\n", "## Scope Behavior\n\n* Files touched\n", 1
+            "## Scope Behavior\n", "## Scope Behavior\n\n- Files touched\n", 1
         )
         result = MODULE.check_profile(self.suite, malformed)
         failed = [item["assertion_id"] for item in result["criteria"] if item["status"] == "FAIL"]
         self.assertEqual(["completion_files_touched"], failed)
 
     def test_required_phrase_as_prose_does_not_satisfy_list_contract(self) -> None:
-        malformed = self.canonical_text.replace("* Files touched", "Files touched", 1)
+        malformed = self.canonical_text.replace("- Files touched", "Files touched", 1)
         result = MODULE.check_profile(self.suite, malformed)
         failed = [item["assertion_id"] for item in result["criteria"] if item["status"] == "FAIL"]
         self.assertEqual(["completion_files_touched"], failed)
@@ -227,7 +227,7 @@ class HarnessTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             malformed_path = Path(directory) / "malformed.md"
             malformed_path.write_text(
-                self.canonical_text.replace("* Files touched\n", "", 1), encoding="utf-8"
+                self.canonical_text.replace("- Files touched\n", "", 1), encoding="utf-8"
             )
             failed = self._run_cli(
                 "check-profile",
