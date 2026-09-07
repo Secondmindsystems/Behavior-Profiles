@@ -40,8 +40,6 @@ PACKAGE_REQUIRED_FILES = (
     "FORMAT.md",
     "LICENSE",
     "TRADEMARKS.md",
-    "CONTRIBUTING.md",
-    "LIMITATIONS.md",
     "profiles/scope-control/README.md",
     "profiles/scope-control/BEHAVIOR_PROFILE.md",
     "profiles/scope-control/TRY_IT.md",

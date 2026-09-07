@@ -76,13 +76,11 @@ See the [harness guide](harness/README.md) and [dogfood protocol](docs/evidence/
 
 A verifier PASS does not establish that an agent followed the profile. Behavioral evidence comes from observed runs in the environment where the profile is used.
 
-## Profile Format and Contributions
+## Profile Format and Feedback
 
 [FORMAT.md](FORMAT.md) describes the reference profile format.
 
-Useful contributions include installation results, reproducible failures, confusing behavior, recurring conduct problems, and corrections to the documentation.
-
-See [CONTRIBUTING.md](CONTRIBUTING.md). Remove credentials, private code, customer records, and hidden instructions from anything you submit publicly.
+Installation results, reproducible failures, confusing behavior, recurring conduct problems, and documentation corrections are welcome through the repository's issue forms. Remove credentials, private code, customer records, and hidden instructions from anything you submit publicly.
 
 ## Experimental Runtime Work
 
