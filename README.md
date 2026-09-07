@@ -1,30 +1,60 @@
 # Behavior Profiles
 
-## The Persistent Conduct Layer Behind Agent Skills
+## The Meta Layer Behind AI Skills
 
-Skills describe what agents know how to do.
+Skills expand what an agent can do. Behavior Profiles describe how the agent is expected to conduct itself while using those skills.
 
-Behavior Profiles describe how agents are expected to conduct themselves while doing it.
+A coding skill, research skill, and deployment skill perform different work. Expectations such as staying within scope, handling uncertainty, asking for permission, and making results reviewable can matter across all three.
 
-A Behavior Profile is a portable conduct contract for an AI agent, delivered through a durable instruction surface. It does not add a new capability. It defines observable expectations for how existing capabilities should be used.
+A Behavior Profile is a **portable conduct contract** that makes those expectations explicit across changing tasks and capabilities.
 
-> The skill changes. The behavior rule persists.
+**The skill changes. The expected conduct persists.**
 
-“Persistent” means the profile remains available in an instruction surface such as `AGENTS.md` or `CLAUDE.md`. It does not imply agent memory, universal obedience, cross-session guarantees, or enforcement.
+An agent may have permission to edit an entire repository while the task calls for changing only one file. Access tells the agent what is available; it does not determine what belongs to the task.
 
-## See the Proof Surface
+Capabilities describe what is technically possible. Skills provide procedures. Permissions define available operations. **Behavior Profiles describe the conduct expected while using them.**
 
-The shortest review path is runnable:
+A profile can remain in an instruction surface such as `AGENTS.md` or `CLAUDE.md` as tasks and skills change. Whether an agent follows it must be observed in the environment where it is used.
+
+Behavior Profiles make expected conduct explicit and reviewable. Where a critical boundary needs enforcement rather than instruction, a separate control can block or require approval for the action.
+
+## The First Profile: Scope Control
+
+Scope Control addresses one recurring failure:
+
+> You asked for one change. The agent completed it, then quietly expanded the task.
+
+The profile asks the agent to make the task boundary visible before acting: the requested task, authorized scope, no-touch boundaries, allowed actions, done condition, and stop condition.
+
+Afterward, it asks for a short completion note showing what changed and what stayed outside the task.
+
+The profile supplies instructions; it does not block files or commands. For a local Git commit checkpoint, see [AI Protected Paths](https://github.com/Secondmindsystems/ai-protected-paths).
+
+## Try Scope Control
+
+Use the [Scope Control installation guide](profiles/scope-control/README.md), then follow [TRY_IT](profiles/scope-control/TRY_IT.md) for the hands-on scenarios and result recording.
+
+The scenarios exercise three situations:
+
+* **ACT** when the requested action and boundary are clear.
+* **DEFER** adjacent work that falls outside the request.
+* **STOP** when the target or authority is incomplete.
+
+Test the profile with your own agent and environment and record what happens.
+
+## Verify the Package and Harness
+
+From the repository root:
 
 ```powershell
 python -B tools/verify_profile_package.py --mode release
 python -B harness/harness.py check-profile `
   --suite harness/profiles/scope-control/suite.json `
-  --profile scope-control/BEHAVIOR_PROFILE_SCOPE_CONTROL.md
+  --profile products/behavior-profiles/scope-control/BEHAVIOR_PROFILE_SCOPE_CONTROL.md
 python -B harness/harness.py run-controls `
   --suite harness/profiles/scope-control/suite.json `
   --observations harness/profiles/scope-control/controls.json `
-  --profile scope-control/BEHAVIOR_PROFILE_SCOPE_CONTROL.md
+  --profile products/behavior-profiles/scope-control/BEHAVIOR_PROFILE_SCOPE_CONTROL.md
 ```
 
 The first command checks package integrity and the bound internal dogfood record. The second checks the canonical profile against 19 structural assertions. The third runs eight paired synthetic controls and must discriminate all eight conforming observations from all eight non-conforming observations.
@@ -40,147 +70,50 @@ if ($LASTEXITCODE -eq 0) { throw "negative control unexpectedly passed" }
 
 That non-zero exit is expected. The decoy contains familiar Scope Control words but does not place the required fields in the required sections and list structures.
 
-The proof chain is deliberately explicit:
+Synthetic controls test whether the harness distinguishes the supplied observations. They do not test an agent. The internal dogfood records document a separate bounded agent-observation campaign.
 
-```text
-canonical product artifact (769385...)
--> structurally conforming installable representation (8ebe5924...)
--> internal agent observation record (511c1a...)
--> synthetic harness control record (fb026c...)
-```
+See the [harness guide](harness/README.md) and [dogfood protocol](profiles/scope-control/DOGFOOD_PROTOCOL.md) for the methods and deeper technical checks.
 
-These are different evidence roles. Synthetic controls test the harness, not an agent. Internal dogfood records one bounded agent observation campaign, not independent external validation.
-
-## Start in Five Minutes
-
-**[Try Scope Control on your own agent — start with a five-minute test.](profiles/scope-control/TRY_IT.md)**
-
-1. Open [Behavior Profile: Scope Control](profiles/scope-control/BEHAVIOR_PROFILE.md).
-2. Add it to the instruction surface your agent reads.
-3. Run the [quick test](profiles/scope-control/QUICK_TEST.md).
-4. For release qualification, follow the [internal dogfood protocol](profiles/scope-control/DOGFOOD_PROTOCOL.md).
-5. Record `PASS`, `FAIL`, or `CONFUSED` using the [evidence template](profiles/scope-control/EVIDENCE_TEMPLATE.md).
-6. If the behavior matters enough that asking is insufficient, use an enforcement boundary such as [Governed Repo](https://github.com/Secondmindsystems/governed-change-demo).
-
-The operating sequence is:
-
-```text
-Describe the conduct
--> install it
--> test it under pressure
--> preserve what happened
--> enforce the critical boundary when instruction is insufficient
-```
-
-## The First Profile: Scope Control
-
-Scope Control addresses one recurring failure:
-
-> You asked for one change. The agent completed it, then quietly expanded the task.
-
-The profile asks the agent to make six things visible before acting:
-
-- requested task
-- authorized scope
-- no-touch boundaries
-- authorized actions
-- done condition
-- stop or flag condition
-
-It then asks for a short completion note showing what happened and what stayed outside the task.
-
-The profile does not block files. It makes the scope decision easier to review.
-
-## AGENTS.md and Behavior Profiles
-
-[AGENTS.md](https://agents.md/) gives coding agents a predictable place for repository instructions. Its official site reported use by more than 60,000 open-source projects when this package was prepared on 2026-08-03.
-
-AGENTS.md tells agents how to work in a repository. A Behavior Profile defines expected conduct that can be carried across repositories and agent environments.
-
-This project uses AGENTS.md as its primary installation surface. It does not compete with or claim ownership of the AGENTS.md format.
-
-## What You Can Verify
-
-The package verifier checks whether the reference package is complete and internally consistent:
-
-```powershell
-python -B tools/verify_profile_package.py
-```
-
-The verifier returns a machine-readable decision and an explicit proof boundary.
-
-Before publication, maintainers can also run the fixed, product-specific identity check:
-
-```powershell
-python -B tools/check_scope_control_publication_state.py --source-file scope-control/BEHAVIOR_PROFILE_SCOPE_CONTROL.md
-```
-
-This checks the four frozen identities above, confirms structural conformance for the canonical and installable representations, and confirms that the negative structural control fails. It is a Scope Control publication check, not a generalized provenance system.
-
-A verifier PASS does not prove that an agent obeyed the profile. Behavioral evidence comes from observed pressure-test episodes and must identify its environment, profile version, fixture, expected conduct, observed conduct, evaluator, and limitations.
+A verifier PASS does not establish that an agent followed the profile. Behavioral evidence comes from observed runs in the environment where the profile is used.
 
 ## Install Surfaces
 
-- [AGENTS.md installation](adapters/agents-md/README.md)
-- [Claude Code / CLAUDE.md installation](adapters/claude-code/README.md)
-- [Generic durable instruction-surface installation](adapters/generic/README.md)
+* [AGENTS.md installation](adapters/agents-md/README.md)
+* [Claude Code / CLAUDE.md installation](adapters/claude-code/README.md)
+* [Generic durable instruction-surface installation](adapters/generic/README.md)
 
-Each adapter names its target instruction file or surface, precedence caveat, quick-test step, and evidence limitation.
+Each adapter explains where the profile goes, relevant instruction-precedence considerations, and how to test the installation.
 
-## Open Format
+## Profile Format and Contributions
 
-[FORMAT.md](FORMAT.md) defines a small reference shape for portable profiles. It is not a universal standard or certification scheme.
+[FORMAT.md](FORMAT.md) describes the reference profile format.
 
-## Contribute Evidence Before Abstraction
+Useful contributions include installation results, reproducible failures, confusing behavior, recurring conduct problems, and corrections to the documentation.
 
-Useful contributions include:
+See [CONTRIBUTING.md](CONTRIBUTING.md). Remove credentials, private code, customer records, and hidden instructions from anything you submit publicly.
 
-- a reproducible installation result;
-- a failure or confusion report;
-- a recurring behavior that remains hard to control;
-- a bounded fixture;
-- a correction to an unsupported claim or unclear limitation.
+## Experimental Runtime Work
 
-See [CONTRIBUTING.md](CONTRIBUTING.md).
+The repository also documents a separate Scope Control Runtime that evaluates proposed actions.
 
-After publication, use the repository issue forms to [report an installation result](https://github.com/Secondmindsystems/behavior-profiles/issues/new?template=installation-result.yml) or [submit a recurring uncontrolled behavior](https://github.com/Secondmindsystems/behavior-profiles/issues/new?template=recurring-behavior.yml). Remove secrets, private repository content, customer data, and hidden instructions before submitting evidence.
+A recorded Windows trial used Claude Code 2.1.137 and its PreToolUse integration. The tested live subset honored ALLOW, BLOCK, and DEFER. ASK was qualified in the deterministic engine only.
 
-## Related Work
+The active repository publishes the architecture and qualification records rather than the executable runtime. Earlier implementation commits remain in Git history.
 
-- [Behavior Profiles paper](BEHAVIOR_PROFILES.md)
-- [Governance Loops](governance-loops.md)
-- [Protected Paths](protected-paths.md)
-- [Governed Repo demo](https://github.com/Secondmindsystems/governed-change-demo)
-- [Second Mind Systems](https://github.com/Secondmindsystems/second-mind-systems)
+Read the [runtime qualification page](products/behavior-profiles/runtime/README.md) for the pinned environment, tested grammar, results, and operating conditions.
 
-## Scope Control Runtime v0.1 (Level 3)
+The runtime experiment is separate from the installable instruction profile above.
 
-Scope Control Runtime is a distinct experimental enforcement layer for proposed actions. It is separate from the instruction-layer Behavior Profile materials above. Earlier descriptions that profiles do not enforce or block actions apply to those instruction-layer materials, not to this Runtime layer.
+## Go Deeper
 
-> **Scope Control Runtime v0.1 evaluated proposed agent actions against a declared task boundary before execution through one qualified Claude Code PreToolUse integration surface on pinned Claude Code 2.1.137 in the tested Windows, authenticated-session topology. On the tested live subset, the host honored ALLOW, BLOCK, and DEFER decisions, and DEFER produced a distinct durable deferred item. ASK is qualified at the deterministic decision-engine level only; its live host projection remains unproven.**
+For the original category argument and publication context, read [**The Meta Layer Behind AI Skills — Public Edition v0.2**](https://github.com/Secondmindsystems/second-mind-systems/blob/main/BEHAVIOR_PROFILES.md).
 
-Qualification limitations:
+Related work:
 
-- **LIM-1:** ASK is qualified in the deterministic engine; its live Claude Code host seam and host obedience remain unproven.
-- **LIM-2:** Qualification is pinned to Claude Code 2.1.137.
-- **LIM-3:** The evidence is a bounded live sample and does not establish reliability or production stability.
-- **LIM-4:** Shell governance covers only the frozen deterministic supported grammar.
-- **LIM-5:** One adapter and one client are qualified; cross-client compatibility is not established.
-- **LIM-6:** The Runtime is local, experimental, default-off, and non-production.
-- **LIM-7:** Qualification history is local and single-machine at publication time.
-- **LIM-8a:** Authenticated Claude session infrastructure was retained.
-- **LIM-8b:** Windows is the tested operating-system topology.
-- **LIM-8c:** Qualification passed with declared retained dependencies; environmental independence is not established.
-
-The internal qualification suite remains `25/25`, with a `16/16` paired engine matrix. The public repository preserves the qualification claim, identities, limitations, architecture, and historical publication record, but active HEAD does not distribute the executable Runtime mechanism. See the [Runtime architecture and qualification page](products/behavior-profiles/runtime/README.md) and [public qualification manifest](products/behavior-profiles/PUBLIC_RUNTIME_QUALIFICATION_MANIFEST_v0_1.json).
-
-The implementation appeared in earlier public commits. Those commits remain in ordinary Git history; this forward correction does not rewrite or erase that history.
-
-## Boundary
-
-This repository provides instruction-layer artifacts, fixtures, evidence templates, and a package-integrity verifier.
-
-It does not provide security, compliance, tamper resistance, remote enforcement, guaranteed behavior, customer validation, or production readiness. See [LIMITATIONS.md](LIMITATIONS.md).
+* [Governance Loops](governance-loops.md)
+* [AI Protected Paths](https://github.com/Secondmindsystems/ai-protected-paths)
+* [Governed Change Demo](https://github.com/Secondmindsystems/governed-change-demo)
+* [Engineering Portfolio](https://github.com/Secondmindsystems/governed-ai-systems-portfolio)
 
 ## License
 
